@@ -1,0 +1,255 @@
+<html>
+    <head>
+        <title>Administration Page for ChatBot</title>
+        <link rel="stylesheet" href="./styles/style_admin.css">
+
+        <!-- CSS Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+        <!-- JS Bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    </head>
+    <%- include('./partials/header'); %>
+    <body class="general_body">
+      <div class="search-container">
+        <form class="search-form" action="#">
+          <input type="text" placeholder="Search...">
+          <button type="submit">Search</button>
+        </form>
+      </div>
+        <div class="container">
+            <form class="creation-form">
+                <h1>Bot Creation</h1>
+                <label for="bot-image">Bot image:</label>
+                <div class="image-carousel">
+                    <input type="radio" name="bot-image" id="image1" value="image1.png">
+                    <label for="image1"><img src="/images/image1.png" alt="Image 1"></label>
+                    
+                    <input type="radio" name="bot-image" id="image2" value="image2.png">
+                    <label for="image2"><img src="/images/image2.png" alt="Image 2"></label>
+                    
+                    <input type="radio" name="bot-image" id="image3" value="image3.png">
+                    <label for="image3"><img src="/images/image3.png" alt="Image 3"></label>
+                    
+                    <input type="radio" name="bot-image" id="image4" value="image4.png">
+                    <label for="image4"><img src="/images/image4.png" alt="Image 4"></label>
+                    
+                    <input type="radio" name="bot-image" id="image5" value="image5.png">
+                    <label for="image5"><img src="/images/image5.png" alt="Image 5"></label>
+                  </div>
+                <label for="bot-name">Bot name: </label>
+                <input type="text" id="bot-name" name="bot-name" placeholder="Insert the name...">
+                <label for="bot-file">Brains: </label>
+                <select id="bot-file" name="bot-file">
+                    <option value="file1.rive">Standard.rive</option>
+                    <option value="file2.rive">Comments.rive</option>
+                    <option value="file3.rive">Replies.rive</option>
+                </select>
+                <label>Selected brains:</label>
+                <ol id="selected-brains"></ol>
+                <br>
+                <input type="checkbox" id="checkbox1" name="checkbox1">
+                <label for="checkbox1"><img class="mouth" src="./images/discord.png" alt="Discord" /></label>
+                <input type="checkbox" id="checkbox2" name="checkbox2">
+                <label for="checkbox2"><img class="mouth" src="./images/slack.png" alt="Slack" /></label>
+                <input type="checkbox" id="checkbox3" name="checkbox3">
+                <label for="checkbox3"><img class="mouth" src="./images/mastodon.png" alt="Mastodon" /></label>
+                <br>
+                <button class="create-button" type="submit">Create Bot</button>
+            </form>
+            
+            <br>
+            
+            <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
+                <h2>Existing bots:</h2> <br>
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="container2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <img src="/images/image1.png" alt="Image 1" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                          <div class="buttons_header">
+                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                          <div class="info-box">
+                            <br>
+                            <h2>Name</h2>
+                            <p><b>Status:</b> active</p>
+                            <p><b>Brains:</b></p>
+                            <ul>
+                              <li>Standard.rive</li>
+                              <li>Advanced.rive</li>
+                            </ul>
+                            <p><b>Mouths:</b></p>
+                            <div class="mouths_container">
+                              <img class="mouth" src="./images/discord.png" alt="Discord" />
+                              <img class="mouth" src="./images/mastodon.png" alt="Mastodon" />
+                              <img class="mouth" src="./images/slack.png" alt="Slack" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="container2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <img src="/images/image2.png" alt="Image 1" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                          <div class="buttons_header">
+                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                          <div class="info-box">
+                            <br>
+                            <h2>Name</h2>
+                            <p><b>Status:</b> active</p>
+                            <p><b>Brains:</b></p>
+                            <ul>
+                              <li>Standard.rive</li>
+                              <li>Advanced.rive</li>
+                            </ul>
+                            <p><b>Mouths:</b></p>
+                            <div class="mouths_container">
+                              <img class="mouth" src="./images/slack.png" alt="Slack" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="container2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <img src="/images/image3.png" alt="Image 1" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                          <div class="buttons_header">
+                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                          <div class="info-box">
+                            <br>
+                            <h2>Name</h2>
+                            <p><b>Status:</b> active</p>
+                            <p><b>Brains:</b></p>
+                            <ul>
+                              <li>Standard.rive</li>
+                              <li>Advanced.rive</li>
+                            </ul>
+                            <p><b>Mouths:</b></p>
+                            <div class="mouths_container">
+                              <img class="mouth" src="./images/discord.png" alt="Discord" />
+                              <img class="mouth" src="./images/slack.png" alt="Slack" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="container2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <img src="/images/image4.png" alt="Image 1" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                          <div class="buttons_header">
+                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                          <div class="info-box">
+                            <br>
+                            <h2>Name</h2>
+                            <p><b>Status:</b> active</p>
+                            <p><b>Brains:</b></p>
+                            <ul>
+                              <li>Standard.rive</li>
+                              <li>Advanced.rive</li>
+                            </ul>
+                            <p><b>Mouths:</b></p>
+                            <div class="mouths_container">
+                              <img class="mouth" src="./images/discord.png" alt="Discord" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                    <div class="container2">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <img src="/images/image5.png" alt="Image 1" class="img-fluid">
+                        </div>
+                        <div class="col-md-6">
+                          <div class="buttons_header">
+                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
+                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
+                          </div>
+                          <div class="info-box">
+                            <br>
+                            <h2>Name</h2>
+                            <p><b>Status:</b> active</p>
+                            <p><b>Brains:</b></p>
+                            <ul>
+                              <li>Standard.rive</li>
+                              <li>Advanced.rive</li>
+                            </ul>
+                            <p><b>Mouths:</b></p>
+                            <div class="mouths_container">
+                              <img class="mouth" src="./images/discord.png" alt="Discord" />
+                              <img class="mouth" src="./images/mastodon.png" alt="Mastodon" />
+                              <img class="mouth" src="./images/slack.png" alt="Slack" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br><br>
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselIndicators" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselIndicators" data-slide-to="1"></li>
+                    <li data-target="#carouselIndicators" data-slide-to="2"></li>
+                    <li data-target="#carouselIndicators" data-slide-to="3"></li>
+                    <li data-target="#carouselIndicators" data-slide-to="4"></li>
+                </ol>
+                <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#carouselIndicators" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
+        </div> 
+    </body>
+    <script>
+        const select = document.getElementById("bot-file");
+        const list = document.getElementById("selected-brains");
+        const selected= [];
+
+        select.addEventListener("change", function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (!selected.includes(selectedOption.value)) {
+                selected.push(selectedOption.value);
+                const listItem = document.createElement("li");
+                listItem.textContent = selectedOption.textContent;
+                list.appendChild(listItem);
+            }
+        });
+    </script>
+</html>

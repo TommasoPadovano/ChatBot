@@ -14,8 +14,12 @@ app.set('view engine', 'ejs');
 }));*/
 
 app.get('/', (req, res) => {
-  res.render("index");
+  res.render("administration_page");
 })
+
+app.get('/login', function(req, res) {
+  res.render('login');
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
