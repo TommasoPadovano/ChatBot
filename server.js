@@ -14,6 +14,7 @@ app.set('view engine', 'ejs');
 }));*/
 
 app.get('/', (req, res) => {
+  let bots = [];
   res.render("administration_page");
 })
 

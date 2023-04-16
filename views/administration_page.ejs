@@ -63,9 +63,9 @@
             </form>
             
             <br>
-            
-            <div id="carouselIndicators" class="carousel slide" data-ride="carousel">
-                <h2>Existing bots:</h2> <br>
+
+            <h2>Existing bots:</h2> <br>
+            <div id="carouselIndicators" class="carousel slide" data-ride="carousel">  
                 <div class="carousel-inner">
                   <div class="carousel-item active">
                     <div class="container2">
@@ -98,133 +98,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="carousel-item">
-                    <div class="container2">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <img src="/images/image2.png" alt="Image 1" class="img-fluid">
-                        </div>
-                        <div class="col-md-6">
-                          <div class="buttons_header">
-                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                          </div>
-                          <div class="info-box">
-                            <br>
-                            <h2>Name</h2>
-                            <p><b>Status:</b> active</p>
-                            <p><b>Brains:</b></p>
-                            <ul>
-                              <li>Standard.rive</li>
-                              <li>Advanced.rive</li>
-                            </ul>
-                            <p><b>Mouths:</b></p>
-                            <div class="mouths_container">
-                              <img class="mouth" src="./images/slack.png" alt="Slack" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-item">
-                    <div class="container2">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <img src="/images/image3.png" alt="Image 1" class="img-fluid">
-                        </div>
-                        <div class="col-md-6">
-                          <div class="buttons_header">
-                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                          </div>
-                          <div class="info-box">
-                            <br>
-                            <h2>Name</h2>
-                            <p><b>Status:</b> active</p>
-                            <p><b>Brains:</b></p>
-                            <ul>
-                              <li>Standard.rive</li>
-                              <li>Advanced.rive</li>
-                            </ul>
-                            <p><b>Mouths:</b></p>
-                            <div class="mouths_container">
-                              <img class="mouth" src="./images/discord.png" alt="Discord" />
-                              <img class="mouth" src="./images/slack.png" alt="Slack" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-item">
-                    <div class="container2">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <img src="/images/image4.png" alt="Image 1" class="img-fluid">
-                        </div>
-                        <div class="col-md-6">
-                          <div class="buttons_header">
-                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                          </div>
-                          <div class="info-box">
-                            <br>
-                            <h2>Name</h2>
-                            <p><b>Status:</b> active</p>
-                            <p><b>Brains:</b></p>
-                            <ul>
-                              <li>Standard.rive</li>
-                              <li>Advanced.rive</li>
-                            </ul>
-                            <p><b>Mouths:</b></p>
-                            <div class="mouths_container">
-                              <img class="mouth" src="./images/discord.png" alt="Discord" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="carousel-item">
-                    <div class="container2">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <img src="/images/image5.png" alt="Image 1" class="img-fluid">
-                        </div>
-                        <div class="col-md-6">
-                          <div class="buttons_header">
-                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                          </div>
-                          <div class="info-box">
-                            <br>
-                            <h2>Name</h2>
-                            <p><b>Status:</b> active</p>
-                            <p><b>Brains:</b></p>
-                            <ul>
-                              <li>Standard.rive</li>
-                              <li>Advanced.rive</li>
-                            </ul>
-                            <p><b>Mouths:</b></p>
-                            <div class="mouths_container">
-                              <img class="mouth" src="./images/discord.png" alt="Discord" />
-                              <img class="mouth" src="./images/mastodon.png" alt="Mastodon" />
-                              <img class="mouth" src="./images/slack.png" alt="Slack" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <br><br>
                 <ol class="carousel-indicators">
-                    <li data-target="#carouselIndicators" data-slide-to="0" class="active"></li>
-                    <li data-target="#carouselIndicators" data-slide-to="1"></li>
-                    <li data-target="#carouselIndicators" data-slide-to="2"></li>
-                    <li data-target="#carouselIndicators" data-slide-to="3"></li>
-                    <li data-target="#carouselIndicators" data-slide-to="4"></li>
                 </ol>
                 <a class="carousel-control-prev" href="#carouselIndicators" role="button" data-slide="prev">
                   <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -238,18 +114,201 @@
         </div> 
     </body>
     <script>
-        const select = document.getElementById("bot-file");
-        const list = document.getElementById("selected-brains");
-        const selected= [];
+        document.addEventListener('DOMContentLoaded',init);
 
-        select.addEventListener("change", function() {
-            const selectedOption = this.options[this.selectedIndex];
-            if (!selected.includes(selectedOption.value)) {
-                selected.push(selectedOption.value);
-                const listItem = document.createElement("li");
-                listItem.textContent = selectedOption.textContent;
-                list.appendChild(listItem);
-            }
-        });
+        let botList;
+
+        function manageFilesInCreation() {
+          const select = document.getElementById("bot-file");
+          const list = document.getElementById("selected-brains");
+          const selected= [];
+
+          select.addEventListener("change", function() {
+              const selectedOption = this.options[this.selectedIndex];
+              if (!selected.includes(selectedOption.value)) {
+                  selected.push(selectedOption.value);
+                  const listItem = document.createElement("li");
+                  listItem.textContent = selectedOption.textContent;
+                  list.appendChild(listItem);
+              }
+          });
+        }
+
+        function addBot(active, num) {
+
+          let parentDiv = document.createElement('div');
+          parentDiv.className = "carousel-item " + active;
+          
+          let childDiv = document.createElement('div');
+          childDiv.className = "container2";
+
+          let rowDiv = document.createElement('div');
+          rowDiv.className = "row";
+
+          let imageDiv = document.createElement('div');
+          imageDiv.className = "col-md-6";
+
+          let profile_img = document.createElement('img');
+          profile_img.src = "./images/image1.png";
+          profile_img.className = "img-fluid";
+          profile_img.alt = "Profile pic";
+
+          imageDiv.append(profile_img);
+
+          rowDiv.append(imageDiv);
+
+          let parent_info_box = document.createElement('div');
+          parent_info_box.className = "col-md-6";
+
+          let button_div = document.createElement('div');
+          button_div.className = "buttons_header";
+
+          let modify_button = document.createElement('button');
+          modify_button.className = "edit-button";
+          modify_button.addEventListener('click', () => {updateBot()});
+          
+          let modify_icon = document.createElement('i');
+          modify_icon.className = "fas fa-pencil-alt";
+
+          modify_button.append(modify_icon);
+
+          let delete_button = document.createElement('button');
+          delete_button.className = "delete-button";
+          delete_button.addEventListener('click', () => {deleteBot()});
+
+          let delete_icon = document.createElement('i');
+          delete_icon.className = "fas fa-trash-alt";
+
+          delete_button.append(delete_icon);
+
+          button_div.append(modify_button);
+          button_div.append(delete_button);
+          parent_info_box.append(button_div);
+
+          let info_box = document.createElement('div');
+          info_box.className = "info-box";
+
+          let br = document.createElement('br');
+
+          info_box.append(br);
+
+          let bot_name = document.createElement('h2');
+          bot_name.textContent = "Steeve";
+
+          info_box.append(bot_name);
+          
+          let status = document.createElement('p');
+          status.textContent = "Status: active";
+
+          info_box.append(status);
+
+          let brains = document.createElement('p');
+          brains.textContent = "Brains: ";
+
+          info_box.append(brains);
+
+          let brain_list = document.createElement('ul');
+          let brain_item = document.createElement('li');
+          brain_item.textContent = "Standard.rive";
+
+          brain_list.append(brain_item);
+
+          info_box.append(brain_list);
+
+          //missing the mouths
+
+          parent_info_box.append(info_box);
+
+          rowDiv.append(parent_info_box);
+
+          childDiv.append(rowDiv);
+
+          parentDiv.append(childDiv);
+
+          //append the brand new bot div to the carousel
+          botList.append(parentDiv);
+
+          //add also the indicator
+          let indicators = document.querySelector('.carousel-indicators');
+          let item = document.createElement('li');
+          item.dataset.target = '#carouselIndicators';
+          item.dataset.slideTo = num;
+          item.className = active;
+
+          indicators.append(item);
+        }
+
+        function reloadBotList() {
+
+          while (botList.firstChild) {
+            botList.removeChild(botList.firstChild);
+          }
+
+          let myHeaders = new Headers();
+          myHeaders.append('Content-Type', 'application/json');
+
+          let myInit = { 
+            method: 'GET',
+                    headers: myHeaders,
+                    cache: 'default' 
+                };
+
+          let myURL = `http://localhost:3000/`;
+          
+          addBot("active", "0");
+          addBot("", "1");
+          addBot("", "2");
+
+          /*
+          fetch(myURL,myInit)
+            .then((httpResponse)=>{
+              return httpResponse.json()
+            })
+            .then((setOfBots)=>{
+              for(let bot of setOfBots){
+                addBot("active", "0");
+              }
+            })
+            .catch((err)=>{
+              console.log(`ERROR : ${err}`);
+            })*/
+        }
+
+        function deleteBot() {
+          console.log("I will delete this bot");
+          let myHeaders = new Headers();
+          myHeaders.append('Content-Type', 'application/json');
+
+          let myInit = { 
+            method: 'DELETE',
+            headers: myHeaders,
+            cache: 'default' 
+          };
+
+          /*
+          let myURL = `http://localhost:3001/${botId}`;
+          fetch(myURL,myInit)
+            .then((httpResponse)=>{
+              return httpResponse.text()
+            })
+            .then((returnString)=>{
+              reloadBotList();
+              console.log(`All is OK ${returnString}`)
+            })
+            .catch((err)=>{
+              console.log(`ERROR : ${err}`);
+            })*/
+        }
+
+        function updateBot() {
+          console.log("I will update this bot");
+        }
+
+        function init() {
+          botList = document.querySelector('.carousel-inner');
+
+          manageFilesInCreation();
+          reloadBotList();
+        }
     </script>
 </html>
