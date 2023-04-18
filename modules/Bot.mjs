@@ -97,6 +97,8 @@ class Bot {
 
   static isValidProperty(propertyName, propertyValue) {
     switch (propertyName) {
+      case "id":
+        return typeof propertyValue === "number";
       case "name":
         return typeof propertyValue === "string";
       case "brains":
