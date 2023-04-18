@@ -1,7 +1,7 @@
 <html>
     <head>
         <title>Administration Page for ChatBot</title>
-        <link rel="stylesheet" href="./styles/style_admin.css">
+        <link rel="stylesheet" href="/styles/style_admin.css">
 
         <!-- CSS Bootstrap -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -13,7 +13,24 @@
 
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
     </head>
-    <%- include('./partials/header'); %>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">ChatBot</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="administration_page.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="login.html">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
     <body class="general_body">
       <div class="search-container">
         <form class="search-form" action="#">
@@ -40,24 +57,24 @@
                     
                     <input type="radio" name="bot-image" id="image5" value="image5.png">
                     <label for="image5"><img src="/images/image5.png" alt="Image 5"></label>
-                  </div>
+                </div>
                 <label for="bot-name">Bot name: </label>
                 <input type="text" id="bot-name" name="bot-name" placeholder="Insert the name...">
                 <label for="bot-file">Brains: </label>
                 <select id="bot-file" name="bot-file">
-                    <option value="file1.rive">Standard.rive</option>
-                    <option value="file2.rive">Comments.rive</option>
-                    <option value="file3.rive">Replies.rive</option>
+                    <option value="Standard.rive">Standard.rive</option>
+                    <option value="Comments.rive">Comments.rive</option>
+                    <option value="Replies.rive">Replies.rive</option>
                 </select>
                 <label>Selected brains:</label>
                 <ol id="selected-brains"></ol>
                 <br>
-                <input type="checkbox" id="checkbox1" name="checkbox1">
-                <label for="checkbox1"><img class="mouth" src="./images/discord.png" alt="Discord" /></label>
-                <input type="checkbox" id="checkbox2" name="checkbox2">
-                <label for="checkbox2"><img class="mouth" src="./images/slack.png" alt="Slack" /></label>
-                <input type="checkbox" id="checkbox3" name="checkbox3">
-                <label for="checkbox3"><img class="mouth" src="./images/mastodon.png" alt="Mastodon" /></label>
+                <input type="checkbox" id="checkbox1" name="checkbox" value="discord">
+                <label for="checkbox1"><img class="mouth" src="/images/discord.png" alt="Discord" /></label>
+                <input type="checkbox" id="checkbox2" name="checkbox" value="slack">
+                <label for="checkbox2"><img class="mouth" src="/images/slack.png" alt="Slack" /></label>
+                <input type="checkbox" id="checkbox3" name="checkbox" value="mastodon">
+                <label for="checkbox3"><img class="mouth" src="/images/mastodon.png" alt="Mastodon" /></label>
                 <br>
                 <button class="create-button" type="submit">Create Bot</button>
             </form>
@@ -67,37 +84,6 @@
             <h2>Existing bots:</h2> <br>
             <div id="carouselIndicators" class="carousel slide" data-ride="carousel">  
                 <div class="carousel-inner">
-                  <div class="carousel-item active">
-                    <div class="container2">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <img src="/images/image1.png" alt="Image 1" class="img-fluid">
-                        </div>
-                        <div class="col-md-6">
-                          <div class="buttons_header">
-                            <button class="edit-button"><i class="fas fa-pencil-alt"></i></button>
-                            <button class="delete-button"><i class="fas fa-trash-alt"></i></button>
-                          </div>
-                          <div class="info-box">
-                            <br>
-                            <h2>Name</h2>
-                            <p><b>Status:</b> active</p>
-                            <p><b>Brains:</b></p>
-                            <ul>
-                              <li>Standard.rive</li>
-                              <li>Advanced.rive</li>
-                            </ul>
-                            <p><b>Mouths:</b></p>
-                            <div class="mouths_container">
-                              <img class="mouth" src="./images/discord.png" alt="Discord" />
-                              <img class="mouth" src="./images/mastodon.png" alt="Mastodon" />
-                              <img class="mouth" src="./images/slack.png" alt="Slack" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <br><br>
                 <ol class="carousel-indicators">
@@ -117,11 +103,19 @@
         document.addEventListener('DOMContentLoaded',init);
 
         let botList;
+        let createNewBotButton;
+        let chosen_image1;
+        let chosen_image2;
+        let chosen_image3;
+        let chosen_image4;
+        let chosen_image5;
+        let botName;
+        let selected;
+
 
         function manageFilesInCreation() {
           const select = document.getElementById("bot-file");
           const list = document.getElementById("selected-brains");
-          const selected= [];
 
           select.addEventListener("change", function() {
               const selectedOption = this.options[this.selectedIndex];
@@ -134,7 +128,59 @@
           });
         }
 
-        function addBot(active, num) {
+        function createNewBot() {
+          const radioButtons = document.getElementsByName('bot-image');
+          let selectedImage = 'image1.png'; //default value
+
+          for (let i = 0; i < radioButtons.length; i++) {
+            if (radioButtons[i].checked) {
+              selectedImage = radioButtons[i].value;
+              break;
+            }
+          }
+
+          const checkboxButtons = document.getElementsByName('checkbox');
+          let mouths = [];
+          for(let j = 0; j < checkboxButtons.length; j++) {
+            if(checkboxButtons[j].checked) {
+              mouths.push(checkboxButtons[j].value);
+            }
+          }
+
+          let myHeaders = new Headers();
+          myHeaders.append('Content-Type', 'application/json');
+          let payload = {
+            profile_url: selectedImage,
+            name: botName.value,
+            brains: selected,
+            mouths: mouths,
+            history: [],
+          };
+          let myBody = JSON.stringify(payload);
+          let myInit = { 
+            method: 'POST',
+            headers: myHeaders,
+            body: myBody,
+          };
+          let myURL = "http://localhost:3000/";
+
+          //launch the request
+          fetch(myURL,myInit)
+          .then((httpResponse)=>{
+            return httpResponse.text();
+          })
+          .then((responseBody)=>{
+            reloadBotList();
+            //clear fields
+
+            console.log(`response is ${responseBody}`);
+          })
+          .catch((err)=>{
+            console.log(`ERROR : ${err}`);
+          })
+        }
+
+        function addBot(bot, active, num) {
 
           let parentDiv = document.createElement('div');
           parentDiv.className = "carousel-item " + active;
@@ -149,7 +195,7 @@
           imageDiv.className = "col-md-6";
 
           let profile_img = document.createElement('img');
-          profile_img.src = "./images/image1.png";
+          profile_img.src = "/images/" + bot.profile_url;
           profile_img.className = "img-fluid";
           profile_img.alt = "Profile pic";
 
@@ -174,7 +220,7 @@
 
           let delete_button = document.createElement('button');
           delete_button.className = "delete-button";
-          delete_button.addEventListener('click', () => {deleteBot()});
+          delete_button.addEventListener('click', () => {deleteBot(bot.id)});
 
           let delete_icon = document.createElement('i');
           delete_icon.className = "fas fa-trash-alt";
@@ -193,7 +239,7 @@
           info_box.append(br);
 
           let bot_name = document.createElement('h2');
-          bot_name.textContent = "Steeve";
+          bot_name.textContent = bot.name;
 
           info_box.append(bot_name);
           
@@ -208,14 +254,32 @@
           info_box.append(brains);
 
           let brain_list = document.createElement('ul');
-          let brain_item = document.createElement('li');
-          brain_item.textContent = "Standard.rive";
-
-          brain_list.append(brain_item);
+          for(let i = 0; i < bot.brains.length; i++) {
+            let brain_item = document.createElement('li');
+            brain_item.textContent = bot.brains[i];
+            brain_list.append(brain_item);
+          }
 
           info_box.append(brain_list);
 
-          //missing the mouths
+          let mouths = document.createElement('p');
+          mouths.textContent = "Mouths: ";
+
+          info_box.append(mouths);
+
+          let mouths_container = document.createElement('div');
+          mouths_container.className = "mouths_container";
+
+          for(let i = 0; i < bot.mouths.length; i++) {
+            let img = document.createElement('img');
+            img.src = "/images/" + bot.mouths[i] + ".png";
+            img.className = "mouth";
+            img.alt = bot.mouths[i];
+
+            mouths_container.append(img);
+          }
+
+          info_box.append(mouths_container);
 
           parent_info_box.append(info_box);
 
@@ -254,39 +318,56 @@
                 };
 
           let myURL = `http://localhost:3000/`;
-          
-          addBot("active", "0");
-          addBot("", "1");
-          addBot("", "2");
 
-          /*
           fetch(myURL,myInit)
             .then((httpResponse)=>{
               return httpResponse.json()
             })
-            .then((setOfBots)=>{
-              for(let bot of setOfBots){
-                addBot("active", "0");
+            .then((data)=>{
+              let setOfBots = data.bots;
+              let isAdmin = data.admin;
+              const formContainer = document.querySelector('.creation-form');
+              if (isAdmin) {
+                formContainer.style.display = 'block';
+              } else {
+                formContainer.style.display = 'none';
+              }
+              if(setOfBots.length != 0) {
+                let first = true;
+                i = 1;
+                for(let bot of setOfBots){
+                  if(first == true) {
+                    addBot(bot,"active", "0");
+                    first = false;
+                  } else {
+                    addBot(bot, "", i);
+                    i++;
+                  }
+                }
+              } else {
+                let div = document.getElementById('carouselIndicators')
+                div.innerHTML = "";
+                let noBot = document.createElement('p');
+                noBot.textContent = "No bot has been created yet."
+
+                div.append(noBot);
               }
             })
             .catch((err)=>{
               console.log(`ERROR : ${err}`);
-            })*/
+            })
         }
 
-        function deleteBot() {
-          console.log("I will delete this bot");
+        function deleteBot(botId) {
           let myHeaders = new Headers();
           myHeaders.append('Content-Type', 'application/json');
 
           let myInit = { 
             method: 'DELETE',
             headers: myHeaders,
-            cache: 'default' 
           };
 
-          /*
-          let myURL = `http://localhost:3001/${botId}`;
+          let myURL = `http://localhost:3000/${botId}`;
           fetch(myURL,myInit)
             .then((httpResponse)=>{
               return httpResponse.text()
@@ -297,7 +378,7 @@
             })
             .catch((err)=>{
               console.log(`ERROR : ${err}`);
-            })*/
+            })
         }
 
         function updateBot() {
@@ -306,6 +387,16 @@
 
         function init() {
           botList = document.querySelector('.carousel-inner');
+          chosen_image1 = document.getElementById('image1');
+          chosen_image2 = document.getElementById('image2');
+          chosen_image3 = document.getElementById('image3');
+          chosen_image4 = document.getElementById('image4');
+          chosen_image5 = document.getElementById('image5');
+          botName = document.getElementById('bot-name');
+          selected = [];
+
+          createNewBotButton = document.querySelector('.create-button');
+          createNewBotButton.addEventListener('click', createNewBot);
 
           manageFilesInCreation();
           reloadBotList();
