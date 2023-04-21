@@ -1,4 +1,4 @@
-import { Bot } from "./Bot.mjs";
+const Bot = require('./Bot');
 
 class BotService {
   constructor(data) {
@@ -103,4 +103,4 @@ class BotService {
   }
 }
 
-export { BotService };
+module.exports = BotService;
