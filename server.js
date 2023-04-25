@@ -4,11 +4,11 @@ const app = express()
 const port = 3000
 const users = require('./users.json')
 const cookieParser = require('cookie-parser');
+const botManager = require('./modules/BotService.js');
 
 app.use(express.static('assets'))
 app.use(express.static('data'))
 app.use('/data', express.static('data'));
-
 app.use('/static', express.static('views'));
 
 app.use(bodyParser.json()) 
@@ -29,6 +29,7 @@ app.get('/', (req, res) => {
       brains: ["standard.rive"],
       mouths: ["discord", "slack"],
       history: [],
+      status: 'active',
     },
     {
       id: "2",
@@ -37,6 +38,7 @@ app.get('/', (req, res) => {
       brains: ["standard.rive", "advanced.rive"],
       mouths: ["discord", "mastodon"],
       history: [],
+      status: 'inactive',
     },
     {
       id: "3",
@@ -45,11 +47,22 @@ app.get('/', (req, res) => {
       brains: ["standard.rive", "advanced.rive"],
       mouths: ["mastodon"],
       history: [],
+      status: 'active',
     },
   ];
 
+  //first retrieve all the bots
+  let my_bots = botManager.load();
+  //close the bots already active;
+  botManager.closeActiveBots();
+  //then, for every bot whose status is active, initialize it
+  my_bots.forEach((bot) => {
+    if(bot.status === 'active') {
+      botManager.activateBot(bot);
+    }
+  });
+
   // Check if the user is authenticated
-  console.log(req.cookies.chatbot_authenticated);
   const authenticated = req.cookies.chatbot_authenticated === 'true';
   if (authenticated) {
     // If the user is authenticated, serve the full content of the page
@@ -69,13 +82,18 @@ app.post('/',(req,res) => {
   res.status(201).send('All is OK');
 })
 
+app.post('/logout', (req, res) => {
+  console.log("Logging out...")
+  res.cookie('chatbot_authenticated', false, {httpOnly: true});
+  res.status(200).send();
+})
+
 app.post('/login', (req, res) => {
   const username = req.body.username;
   // Check if the user is in the list of allowed users
   if (users.users.includes(username)) {
     // Set a cookie to indicate that the user is authenticated
     console.log("Authenticated!")
-    //res.cookie('authenticated', 'true');
     res.cookie('chatbot_authenticated', true, { httpOnly: true });
 
     res.redirect('/static/administration_page.html');

@@ -15,7 +15,7 @@
     </head>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="/">ChatBot</a>
+        <a class="navbar-brand" href="administration_page.html">ChatBot</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -25,7 +25,10 @@
               <a class="nav-link" href="administration_page.html">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="login.html">Login</a>
+              <a class="nav-link" href="login.html" id="login-link">Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="logout-link">Logout</a>
             </li>
           </ul>
         </div>
@@ -69,6 +72,11 @@
                 <label>Selected brains:</label>
                 <ol id="selected-brains"></ol>
                 <br>
+                <label for="bot-status">Status: </label><br>
+                <label><input type="radio" name="status_choice" value="active"> Active </label>
+                <label><input type="radio" name="status_choice" value="inactive"> Inactive </label>
+                <br><br>
+                <label for="bot-mouths">Active also on: </label><br>
                 <input type="checkbox" id="checkbox1" name="checkbox" value="discord">
                 <label for="checkbox1"><img class="mouth" src="/images/discord.png" alt="Discord" /></label>
                 <input type="checkbox" id="checkbox2" name="checkbox" value="slack">
@@ -147,11 +155,21 @@
             }
           }
 
+          let status = 'active';
+          const options = document.getElementsByName('status_choice');
+          for (let i = 0; i < options.length; i++) {
+            if (options[i].checked) {
+              status = options[i].value;
+              break;
+            }
+          }
+
           let myHeaders = new Headers();
           myHeaders.append('Content-Type', 'application/json');
           let payload = {
             profile_url: selectedImage,
             name: botName.value,
+            status: status,
             brains: selected,
             mouths: mouths,
             history: [],
@@ -327,10 +345,16 @@
               let setOfBots = data.bots;
               let isAdmin = data.admin;
               const formContainer = document.querySelector('.creation-form');
+              const logout_button = document.getElementById('logout-link');
+              const login_button = document.getElementById('login-link');
               if (isAdmin) {
                 formContainer.style.display = 'block';
+                logout_button.style.display = 'block';
+                login_button.style.display = 'none';
               } else {
                 formContainer.style.display = 'none';
+                logout_button.style.display = 'none';
+                login_button.style.display = 'block';
               }
               if(setOfBots.length != 0) {
                 let first = true;
@@ -393,6 +417,19 @@
           chosen_image4 = document.getElementById('image4');
           chosen_image5 = document.getElementById('image5');
           botName = document.getElementById('bot-name');
+          const logoutLink = document.getElementById('logout-link');
+          logoutLink.addEventListener('click', async (event) => {
+            event.preventDefault(); 
+      
+            fetch('/logout', { method: 'POST' })
+              .then(()=>{
+                console.log("Redirecting to login page...")
+                window.location.href = '/static/login.html';
+              })
+              .catch((err)=>{
+                console.error(`Server responded with status ${err}`);
+              });
+          });
           selected = [];
 
           createNewBotButton = document.querySelector('.create-button');

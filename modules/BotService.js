@@ -1,17 +1,28 @@
-const Bot = require('./Bot');
+const bot = require("./Bot.js");
+
+const express = require('express');
+const bodyParser = require('body-parser');
+//const cors = require('cors');
+//const RiveScript = require('rivescript');
+
+const INIT_PORT = 4001;
+
+const activeBots = [];
 
 class BotService {
+
   constructor(data) {
   }
 
   static async create(id, brains, mouths, name, image) {
-    const bot = new Bot({ id, brains, mouths, name, image });
+    const bot = new bot({ id, brains, mouths, name, image });
     await bot.initialize();
     return bot;
   }
 
-  async addBot(bot) {
+  static async addBot(bot) {
     //depends on the database we use
+    console.log('Adding bot');
   }
 
   //from PUT
@@ -98,9 +109,96 @@ class BotService {
     // save bot data to database or file
   }
 
-  async load() {
+  static load() {
     // load bot data from database or file
+    // of course, the following lines are just here as a placeholder for the actual code
+    let bots2 = [
+      {
+        id: "1",
+        name: "Steeve",
+        profile_url: "image1.png",
+        brains: ["brain.rive"],
+        mouths: ["discord", "slack"],
+        history: [],
+        status: 'active',
+      },
+      {
+        id: "2",
+        name: "Jhon",
+        profile_url: "image2.png",
+        brains: ["brain.rive"],
+        mouths: ["discord", "mastodon"],
+        history: [],
+        status: 'inactive',
+      },
+      {
+        id: "3",
+        name: "Bill",
+        profile_url: "image5.png",
+        brains: ["brain.rive"],
+        mouths: ["mastodon"],
+        history: [],
+        status: 'active',
+      },
+    ];
+    return bots2;
   }
+
+  static activateBot(bot) {
+    console.log('I will now proceed to activate the bot with id: ' + bot.id);
+    const appBot = express();
+    // support json encoded bodies
+    appBot.use(bodyParser.json());
+    // support url encoded bodies
+    appBot.use(bodyParser.urlencoded({ extended: true }));
+
+    appBot.use(express.static('assets'))
+    appBot.use(express.static('data'))
+    appBot.use('/data', express.static('data'));
+    appBot.use('/static', express.static('views'));
+
+    const port = INIT_PORT + parseInt(bot.id);
+
+    
+    appBot.get('/', (req, res) => {
+      console.log("Redirecting...")
+      res.redirect('/static/index.html');
+    });
+
+    appBot.get('/getBotInfo', (req, res) => {
+      console.log("Hello!");
+      //provide the requested bot
+
+
+      res.status(200).json(bot);
+    });
+
+    /*
+    appBot.post('/', (req, res) => {
+      const { login, message } = req.body;
+      bots[id].rive
+        .reply(login, message)
+        .then(function (reply) {
+          res.send({ name: bots[id].info.name, message: reply });
+        })
+        .catch((err) => console.log(err));
+    });*/
+
+
+    const server = appBot.listen(port, () => {
+      console.log(`Chatbot listening on port ${port}`)
+    });
+
+    //aggiungi il server alla lista di bot attivi
+    activeBots.push(server);
+  }
+
+  static closeActiveBots() {
+    //close all active bots
+    activeBots.forEach(bot => {
+        bot.close();
+    });
+}
 }
 
 module.exports = BotService;
