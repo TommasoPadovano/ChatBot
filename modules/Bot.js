@@ -1,3 +1,5 @@
+const prisma = require("../prisma/prisma.js");
+
 class Bot {
   static id = this.id;
   static name = this.name;
@@ -29,7 +31,7 @@ class Bot {
       }
       this.name = data.name;
     } else {
-      this.name = "";
+      this.name = "Bot with no name :(";
     }
 
     if (data.brains !== undefined) {
