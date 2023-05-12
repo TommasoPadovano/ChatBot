@@ -110,6 +110,13 @@ app.delete('/:id', (req, res) => {
   res.status(201).send('All is OK');
 })
 
+app.patch('/', (req, res) => {
+  let botInfo = req.body;
+  console.log(botInfo);
+
+  res.status(201).send('All is OK');
+})
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
