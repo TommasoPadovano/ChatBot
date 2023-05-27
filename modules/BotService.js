@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 //const cors = require('cors');
 //const RiveScript = require('rivescript');
 
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('./modules/chatbots.db');
+
 const INIT_PORT = 4001;
 
 const activeBots = [];
@@ -20,9 +23,39 @@ class BotService {
     return bot;
   }
 
-  static async addBot(bot) {
-    //depends on the database we use
-    console.log('Adding bot');
+  static addBot(bot) {
+    const sql = 'INSERT INTO bots (name, profile_url, status) VALUES (?, ?, ?)';
+    db.run(sql, [bot.name, bot.profile_url, bot.status], function (err) {
+      if (err) {
+        console.error(err.message);
+      } else {
+        console.log(`A new entry has been added with ID ${this.lastID}`);
+
+        //add the brains into the 'brains' table
+        const sql2 = 'INSERT INTO brains (name, bot_id) VALUES (?,?)';
+        bot.brains.forEach(async (brain) => {
+          db.run(sql2, [brain, this.lastID], function (err) {
+            if(err) {
+              console.error(err.message);
+            } else {
+              console.log(`A new entry has been added into brains`);
+            }
+          });
+        });
+
+        //add the mouths into the 'mouths' table
+        const sql3 = 'INSERT INTO mouths (name, bot_id) VALUES (?,?)';
+        bot.mouths.forEach(async (mouth) => {
+          db.run(sql3, [mouth, this.lastID], function (err) {
+            if(err) {
+              console.error(err.message);
+            } else {
+              console.log(`A new entry has been added into mouths`);
+            }
+          });
+        });
+      }
+    });
   }
 
   //from PUT
@@ -43,9 +76,102 @@ class BotService {
     //depends on the database we use
   }
 
-  getBots() {
-    //depends on the database we use
+  static getBots() {
+    return new Promise((resolve, reject) => {
+      let results = [];
+      db.all('SELECT * FROM bots', (err, rows) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(rows);
+  
+          // Promises array for brains and mouths queries
+          const promises = rows.map((bot) => {
+            return new Promise((resolveBot, rejectBot) => {
+              const sql = 'SELECT name FROM brains WHERE bot_id = ?';
+              db.all(sql, [bot.id], function (err, brains) {
+                if(err) {
+                  console.error(err.message);
+                  rejectBot(err);
+                } else {
+                  let brains_array = brains.map((brain) => brain.name);
+                  bot.brains = brains_array;
+  
+                  const sql2 = 'SELECT name FROM mouths WHERE bot_id = ?';
+                  db.all(sql2, [bot.id], function (err, mouths) {
+                    if(err) {
+                      console.error(err.message);
+                      rejectBot(err);
+                    } else {
+                      let mouths_array = mouths.map((mouth) => mouth.name);
+                      bot.mouths = mouths_array;
+                      results.push(bot);
+                      resolveBot();
+                    }
+                  });
+                }
+              });
+            });
+          });
+  
+          Promise.all(promises)
+            .then(() => {
+              resolve(results);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        }
+      });
+    });
   }
+  /*
+  static getBots() {
+    let results = [];
+    db.all('SELECT * FROM bots', (err, rows) => {
+      if (err) {
+        console.error(err);
+      } else {
+        console.log(rows);
+
+        // Retrieve the brains and the mouths for each bot
+        const sql = 'SELECT name FROM brains WHERE bot_id = ?';
+        rows.forEach((bot) => {
+          db.all(sql, [bot.id], function (err, brains) {
+            if(err) {
+              console.error(err.message);
+            } else {
+              let brains_array = [];
+              brains.forEach((brain) => { 
+                brains_array.push(brain.name);
+              })
+              bot.brains = brains_array;
+
+              const sql2 = 'SELECT name FROM mouths WHERE bot_id = ?';
+              db.all(sql2, [bot.id], function (err, mouths) {
+                if(err) {
+                  console.error(err.message);
+                } else {
+                  let mouths_array = [];
+                  mouths.forEach((mouth) => { 
+                    mouths_array.push(mouth.name);
+                  })
+                  bot.mouths = mouths_array;
+                  results.push(bot);
+
+                  //first console.log
+                  console.log("First: " + results);
+                }
+              });
+              //second console.log
+              console.log("Second: " + results);
+            }
+          });
+        })
+      }
+    });
+  }*/
 
   async initialize() {
     // initialize bot database here
@@ -157,7 +283,7 @@ class BotService {
     appBot.use('/data', express.static('data'));
     appBot.use('/static', express.static('views'));
 
-    const port = INIT_PORT + parseInt(bot.id);
+    const port = INIT_PORT + bot.id;
 
     
     appBot.get('/', (req, res) => {

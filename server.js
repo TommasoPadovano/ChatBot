@@ -52,33 +52,40 @@ app.get('/', (req, res) => {
   ];
 
   //first retrieve all the bots
-  let my_bots = botManager.load();
-  //close the bots already active;
-  botManager.closeActiveBots();
-  //then, for every bot whose status is active, initialize it
-  my_bots.forEach((bot) => {
-    if(bot.status === 'active') {
-      botManager.activateBot(bot);
-    }
-  });
+  botManager.getBots()
+  .then((results) => {
+    console.log(results);
 
-  // Check if the user is authenticated
-  const authenticated = req.cookies.chatbot_authenticated === 'true';
-  if (authenticated) {
-    // If the user is authenticated, serve the full content of the page
-    res.status(200).json({bots: bots2, admin: true});
-    //res.render("administration_page");
-  } else {
-    // If the user is not authenticated, serve a page with only partial content
-    res.status(200).json({bots: bots2, admin: false});
-  }
+    //close the bots already active;
+    botManager.closeActiveBots();
+
+    //active bots
+    results.forEach((bot) => {
+      if(bot.status === 'active') {
+        botManager.activateBot(bot);
+      }
+    });
+
+    // Check if the user is authenticated
+    const authenticated = req.cookies.chatbot_authenticated === 'true';
+    if (authenticated) {
+      // If the user is authenticated, serve the full content of the page
+      res.status(200).json({bots: results, admin: true});
+    } else {
+      // If the user is not authenticated, serve a page with only partial content
+      res.status(200).json({bots: results, admin: false});
+    }
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 })
 
 //create a new bot
 app.post('/',(req,res) => {
   let botToAdd = req.body;
   console.log(botToAdd);
-
+  botManager.addBot(botToAdd);
   res.status(201).send('All is OK');
 })
 
@@ -105,7 +112,8 @@ app.post('/login', (req, res) => {
 
 app.delete('/:id', (req, res) => {
   let id = req.params.id;
-  console.log(id);
+
+  //botManager.removeBot();
 
   res.status(201).send('All is OK');
 })
