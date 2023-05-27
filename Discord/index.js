@@ -28,6 +28,15 @@ client.once(Events.ClientReady, () => {
 });
 
 client.on(Events.InteractionCreate, async interaction => {
+    if (!interaction.isStringSelectMenu()) return;
+    if (interaction.customId === 'select') {
+        selectedBot = interaction.values; // Store the selected bot in the variable
+
+        await interaction.reply({ content: `You are now chatting with ${interaction.values}` });
+    }
+})
+
+client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const command = client.commands.get(interaction.commandName);
@@ -47,15 +56,3 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.login(token);
-
-client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isStringSelectMenu()) return;
-    if (interaction.customId === 'select') {
-        let choices = "";
-        await interaction.values.forEach(async value => {
-            choices += `${value} `
-        })
-
-        await interaction.reply({ content: `You are now chatting with ${choices}` });
-    }
-})
