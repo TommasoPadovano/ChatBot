@@ -17,12 +17,6 @@ class BotService {
   constructor(data) {
   }
 
-  static async create(id, brains, mouths, name, image) {
-    const bot = new bot({ id, brains, mouths, name, image });
-    await bot.initialize();
-    return bot;
-  }
-
   static addBot(bot) {
     const sql = 'INSERT INTO bots (name, profile_url, status) VALUES (?, ?, ?)';
     db.run(sql, [bot.name, bot.profile_url, bot.status], function (err) {
@@ -64,12 +58,58 @@ class BotService {
   }
 
   //from PATCH
-  async updateBot(id, aBot) {
-    //depends on the database we use
+  static updateBot(newBot) {
+    return new Promise((resolve, reject) => {
+      const bot_id = newBot.id;
+      const { name, status, profile_url } = newBot;
+  
+      // If the user has inserted at least one of these values, update it
+      if (name || status || profile_url) {
+        // Construction of the update query
+        let updateQuery = 'UPDATE bots SET';
+  
+        // Adding the fields to update
+        if (name) {
+          updateQuery += ` name = '${name}',`;
+        }
+        if (status) {
+          updateQuery += ` status = '${status}',`;
+        }
+        if (profile_url) {
+          updateQuery += ` profile_url = '${profile_url}',`;
+        }
+  
+        // Removing the last comma
+        updateQuery = updateQuery.slice(0, -1);
+  
+        // Identification of the specific bot to update
+        updateQuery += ` WHERE id = ${bot_id};`;
+  
+        // Execution of the query
+        db.run(updateQuery, function (err) {
+          if (err) {
+            console.error('Error during the update of the bot:', err.message);
+            reject(err);
+          } else {
+            console.log(`Bot with ID ${bot_id} updated successfully.`);
+            resolve();
+          }
+        });
+      } else {
+        resolve(); // Resolve immediately if no fields to update
+      }
+    });
   }
 
-  async removeBot(id) {
-    //depends on the database we use
+  static removeBot(id) {
+    const sql = 'DELETE FROM bots WHERE id = ?';
+    db.run(sql, [id], function (err) {
+      if (err) {
+        console.error(err.message);
+      } else {
+        console.log(`Bot with ID ${id} has been successfully deleted.`);
+      }
+    });
   }
 
   getBot(id) {
@@ -126,85 +166,170 @@ class BotService {
       });
     });
   }
-  /*
-  static getBots() {
-    let results = [];
-    db.all('SELECT * FROM bots', (err, rows) => {
-      if (err) {
-        console.error(err);
-      } else {
-        console.log(rows);
 
-        // Retrieve the brains and the mouths for each bot
-        const sql = 'SELECT name FROM brains WHERE bot_id = ?';
-        rows.forEach((bot) => {
-          db.all(sql, [bot.id], function (err, brains) {
-            if(err) {
-              console.error(err.message);
-            } else {
-              let brains_array = [];
-              brains.forEach((brain) => { 
-                brains_array.push(brain.name);
-              })
-              bot.brains = brains_array;
+  static getBotBrains(bot_id) {
+    return new Promise((resolve, reject) => {
+      let query = `SELECT name FROM brains WHERE bot_id = ?`;
+      db.all(query, [bot_id], (err, rows) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
+  }
 
-              const sql2 = 'SELECT name FROM mouths WHERE bot_id = ?';
-              db.all(sql2, [bot.id], function (err, mouths) {
-                if(err) {
-                  console.error(err.message);
-                } else {
-                  let mouths_array = [];
-                  mouths.forEach((mouth) => { 
-                    mouths_array.push(mouth.name);
-                  })
-                  bot.mouths = mouths_array;
-                  results.push(bot);
-
-                  //first console.log
-                  console.log("First: " + results);
-                }
-              });
-              //second console.log
-              console.log("Second: " + results);
-            }
+  static addBrains(newBot) {
+    return new Promise((resolve, reject) => {
+      const bot_id = newBot.id;
+      const { brains_toAdd } = newBot;
+  
+      if (brains_toAdd) {
+        const deletePromises = brains_toAdd.map((brain) => {
+          return new Promise((resolve, reject) => {
+            let brainsAddQuery = `INSERT INTO brains (name, bot_id) VALUES ('${brain}', ${bot_id})`;
+            db.run(brainsAddQuery, function (err) {
+              if (err) {
+                console.error(err.message);
+                reject(err);
+              } else {
+                console.log(`Brains for bot with ID ${bot_id} have been successfully added.`);
+                resolve();
+              }
+            });
           });
-        })
+        });
+  
+        Promise.all(deletePromises)
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        resolve(); // Resolve immediately if no brains to delete
       }
     });
-  }*/
-
-  async initialize() {
-    // initialize bot database here
-    // e.g., connect to a database server, load files, etc.
-    // set up any other necessary resources
   }
 
-  async addBrain(brain) {
-    this.brains.push(brain);
-    return `added brain ${brain}`;
+  static removeBrains(newBot) {
+    return new Promise((resolve, reject) => {
+      const bot_id = newBot.id;
+      const { brains_toDelete } = newBot;
+  
+      if (brains_toDelete) {
+        const deletePromises = brains_toDelete.map((brain) => {
+          return new Promise((resolve, reject) => {
+            let brainsDeleteQuery = `DELETE FROM brains WHERE bot_id = ${bot_id} AND name = '${brain}'`;
+            db.run(brainsDeleteQuery, function (err) {
+              if (err) {
+                console.error(err.message);
+                reject(err);
+              } else {
+                console.log(`Brains for bot with ID ${bot_id} have been successfully deleted.`);
+                resolve();
+              }
+            });
+          });
+        });
+  
+        Promise.all(deletePromises)
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        resolve(); // Resolve immediately if no brains to delete
+      }
+    });
   }
 
-  async removeBrain(brain) {
-    const index = this.brains.findIndex((e) => e === brain);
-    if (index > -1) {
-      this.brains.splice(index, 1);
-      return `removed brain ${brain}`;
-    }
-    throw new Error(`cannot find brain ${brain}`);
+  static getBotMouths(bot_id) {
+    return new Promise((resolve, reject) => {
+      let getMouths = `SELECT name FROM mouths WHERE bot_id = ${bot_id}`;
+      db.all(getMouths, function (err, rows) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          //let mouths = rows.map(row => row.name);
+          resolve(rows);
+        }
+      });
+    });
   }
 
-  async addMouth(mouth) {
-    this.mouths.push(mouth);
-    return `added mouth ${mouth}`;
+  static addMouths(newBot) {
+    return new Promise((resolve, reject) => {
+      const bot_id = newBot.id;
+      const { mouths_toAdd } = newBot;
+  
+      if (mouths_toAdd) {
+        const addPromises = mouths_toAdd.map((mouth) => {
+          return new Promise((resolve, reject) => {
+            let mouthsAddQuery = `INSERT INTO mouths (name, bot_id) VALUES ('${mouth}', ${bot_id})`;
+            db.run(mouthsAddQuery, function (err) {
+              if (err) {
+                console.error(err.message);
+                reject(err);
+              } else {
+                console.log(`Mouths for bot with ID ${bot_id} have been successfully added.`);
+                resolve();
+              }
+            });
+          });
+        });
+  
+        Promise.all(addPromises)
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        resolve(); // Resolve immediately if no brains to delete
+      }
+    });
   }
 
-  async removeMouth(mouth) {
-    const index = this.mouths.findIndex((e) => e === mouth);
-    if (index > -1) {
-      this.mouths.splice(index, 1);
-      return `removed mouth ${mouth}`;
-    }
-    throw new Error(`cannot find mouth ${mouth}`);
+  static removeMouths(newBot) {
+    return new Promise((resolve, reject) => {
+      const bot_id = newBot.id;
+      const { mouths_toRemove } = newBot;
+  
+      if (mouths_toRemove) {
+        const deletePromises = mouths_toRemove.map((mouth) => {
+          return new Promise((resolve, reject) => {
+            let mouthsDeleteQuery = `DELETE FROM mouths WHERE bot_id = ${bot_id} AND name = '${mouth}'`;
+            db.run(mouthsDeleteQuery, function (err) {
+              if (err) {
+                console.error(err.message);
+                reject(err);
+              } else {
+                console.log(`Mouths for bot with ID ${bot_id} have been successfully deleted.`);
+                resolve();
+              }
+            });
+          });
+        });
+  
+        Promise.all(deletePromises)
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        resolve(); // Resolve immediately if no brains to delete
+      }
+    });
   }
 
   //we should rethink it once we handle the responses and implement the history too for now it's useless
@@ -231,47 +356,22 @@ class BotService {
     await this.save();
   }
 
-  async save() {
-    // save bot data to database or file
-  }
-
-  static load() {
-    // load bot data from database or file
-    // of course, the following lines are just here as a placeholder for the actual code
-    let bots2 = [
-      {
-        id: "1",
-        name: "Steeve",
-        profile_url: "image1.png",
-        brains: ["brain.rive"],
-        mouths: ["discord", "slack"],
-        history: [],
-        status: 'active',
-      },
-      {
-        id: "2",
-        name: "Jhon",
-        profile_url: "image2.png",
-        brains: ["brain.rive"],
-        mouths: ["discord", "mastodon"],
-        history: [],
-        status: 'inactive',
-      },
-      {
-        id: "3",
-        name: "Bill",
-        profile_url: "image5.png",
-        brains: ["brain.rive"],
-        mouths: ["mastodon"],
-        history: [],
-        status: 'active',
-      },
-    ];
-    return bots2;
+  static getRivescripts() {
+    return new Promise((resolve, reject) => {
+      let getRivescripts = `SELECT name FROM rivescripts`;
+      db.all(getRivescripts, function (err, rows) {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
   }
 
   static activateBot(bot) {
-    console.log('I will now proceed to activate the bot with id: ' + bot.id);
+    console.log('Activating the bot with id: ' + bot.id);
     const appBot = express();
     // support json encoded bodies
     appBot.use(bodyParser.json());

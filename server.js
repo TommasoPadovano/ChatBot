@@ -18,67 +18,54 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  let bots = ['bot1', 'bot2', 'bot3'];
-  let noBots = [];
-
-  let bots2 = [
-    {
-      id: "1",
-      name: "Steeve",
-      profile_url: "image1.png",
-      brains: ["standard.rive"],
-      mouths: ["discord", "slack"],
-      history: [],
-      status: 'active',
-    },
-    {
-      id: "2",
-      name: "Jhon",
-      profile_url: "image2.png",
-      brains: ["standard.rive", "advanced.rive"],
-      mouths: ["discord", "mastodon"],
-      history: [],
-      status: 'inactive',
-    },
-    {
-      id: "3",
-      name: "Bill",
-      profile_url: "image5.png",
-      brains: ["standard.rive", "advanced.rive"],
-      mouths: ["mastodon"],
-      history: [],
-      status: 'active',
-    },
-  ];
-
-  //first retrieve all the bots
+  // First retrieve all the bots
   botManager.getBots()
   .then((results) => {
-    console.log(results);
 
-    //close the bots already active;
+    // Close the bots already active;
     botManager.closeActiveBots();
 
-    //active bots
+    // Active bots
     results.forEach((bot) => {
       if(bot.status === 'active') {
         botManager.activateBot(bot);
       }
     });
 
-    // Check if the user is authenticated
-    const authenticated = req.cookies.chatbot_authenticated === 'true';
-    if (authenticated) {
-      // If the user is authenticated, serve the full content of the page
-      res.status(200).json({bots: results, admin: true});
-    } else {
-      // If the user is not authenticated, serve a page with only partial content
-      res.status(200).json({bots: results, admin: false});
-    }
+    // Retrieve rivescripts available
+    botManager.getRivescripts().then((rive_res) => {
+      let rivescripts = [];
+      rive_res.forEach((rivescript) => {
+        rivescripts.push(rivescript.name);
+      })
+
+      res.status(200).json({bots: results, rivescripts: rivescripts, admin: true});
+      /*
+      // Check if the user is authenticated
+      const authenticated = req.cookies.chatbot_authenticated === 'true';
+      if (authenticated) {
+        // If the user is authenticated, serve the full content of the page
+        res.status(200).json({bots: results, rivescripts: rivescripts, admin: true});
+      } else {
+        // If the user is not authenticated, serve a page with only partial content
+        res.status(200).json({bots: results, rivescripts: rivescripts, admin: false});
+      }*/
+    });
   })
   .catch((error) => {
     console.error(error);
   });
+})
+
+app.get('/:id', (req, res) =>{
+  let bot_id = req.params.id;
+  botManager.getBotMouths(bot_id).then((mouths) => {
+    botManager.getBotBrains(bot_id).then((brains) => {
+      console.log(brains);
+      console.log(mouths);
+      res.status(200).json({brains: brains, mouths: mouths});
+    })
+  })
 })
 
 //create a new bot
@@ -113,7 +100,7 @@ app.post('/login', (req, res) => {
 app.delete('/:id', (req, res) => {
   let id = req.params.id;
 
-  //botManager.removeBot();
+  botManager.removeBot(id);
 
   res.status(201).send('All is OK');
 })
@@ -122,7 +109,17 @@ app.patch('/', (req, res) => {
   let botInfo = req.body;
   console.log(botInfo);
 
-  res.status(201).send('All is OK');
+  botManager.updateBot(botInfo).then(() => {
+    botManager.removeBrains(botInfo).then(() => {
+      botManager.addBrains(botInfo).then(() => {
+        botManager.removeMouths(botInfo).then(() => {
+          botManager.addMouths(botInfo).then(() => {
+            res.status(201).send('All is OK');
+          })
+        })
+      })
+    });
+  });
 })
 
 app.listen(port, () => {

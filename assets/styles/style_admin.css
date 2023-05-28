@@ -11,6 +11,10 @@ h1 {
   flex-direction: row;
   align-items: center;
 }
+#existingBrainsContainer {
+  overflow-y: scroll;
+  height: 70px;
+}
 .creation-form, .update-form {
     background-color: rgba(255, 255, 255, 0.2);
     padding: 30px;
