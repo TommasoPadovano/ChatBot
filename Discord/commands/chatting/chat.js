@@ -10,6 +10,10 @@ module.exports = {
                 .setDescription('The message that we want the bot to reply to!')
                 .setRequired(true)),
     async execute(interaction) {
+        if (typeof selectedUser === 'undefined') {
+            await interaction.reply('Please select the user first using /users.');
+            return;
+        }
         if (typeof selectedBot === 'undefined') {
             await interaction.reply('Please select a bot first using /available_bots.');
             return;

@@ -2,25 +2,24 @@ const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('available_bots')
-        .setDescription('Replies with the active bots!'),
+        .setName('users')
+        .setDescription('Replies with the stored users!'),
     async execute(interaction) {
 
         const select = new StringSelectMenuBuilder()
-            .setCustomId('select_bot')
-            .setPlaceholder('Select your Bot');
+            .setCustomId('select_users')
+            .setPlaceholder('Authentificate yourself');
         // You have to change this to the active bots in your server 
         const options = [
-            { label: 'Bulbasaur', description: 'The dual-type Grass/Poison Seed Pokémon.', value: 'Bulbasaur' },
-            { label: 'Charmander', description: 'The Fire-type Lizard Pokémon.', value: 'Charmander' },
-            { label: 'Squirtle', description: 'The Water-type Tiny Turtle Pokémon.', value: 'Squirtle' }
+            { label: 'Oussama', value: 'Oussama' },
+            { label: 'Tommaso', value: 'Tommaso' },
+            { label: 'Vincent', value: 'Vincent' }
         ];
 
         options.forEach(option => {
             select.addOptions(
                 new StringSelectMenuOptionBuilder()
                     .setLabel(option.label)
-                    .setDescription(option.description)
                     .setValue(option.value)
             );
         });
@@ -30,7 +29,7 @@ module.exports = {
             .addComponents(select);
 
         await interaction.reply({
-            content: 'Select the bot you want to chat with!',
+            content: 'Choose the user',
             components: [row],
         });
     },

@@ -29,10 +29,15 @@ client.once(Events.ClientReady, () => {
 
 client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isStringSelectMenu()) return;
-    if (interaction.customId === 'select') {
+    if (interaction.customId === 'select_bot') {
         selectedBot = interaction.values; // Store the selected bot in the variable
 
         await interaction.reply({ content: `You are now chatting with ${interaction.values}` });
+    }
+	if (interaction.customId === 'select_users') {
+        selectedUser = interaction.values; // Store the selected bot in the variable
+
+        await interaction.reply({ content: `Welcome back ${interaction.values}` });
     }
 })
 
