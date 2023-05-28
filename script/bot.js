@@ -4,9 +4,14 @@ const RiveScript = require('rivescript');
 const bot = new RiveScript();
 
 // Load your brain.rive file
-bot.loadFile('../assets/data/brain.rive')
-    .then(loading_done)
-    .catch(loading_error);
+async function loadBrain(brain) {
+    try {
+        const result = await bot.loadFile(brain);
+        return loading_done(result);
+    } catch (error) {
+        return loading_error(error);
+    }
+}
 
 // Set up a function to get a response based on user input
 function getBotReply(message) {
@@ -22,5 +27,6 @@ function loading_error(error, filename, lineno) {
 }
 
 module.exports = {
-    getBotReply
+    getBotReply,
+    loadBrain
 }

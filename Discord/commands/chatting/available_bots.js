@@ -8,21 +8,23 @@ module.exports = {
 
         const select = new StringSelectMenuBuilder()
             .setCustomId('select')
-            .setPlaceholder('Select your Bot')
-            .addOptions(
+            .setPlaceholder('Select your Bot');
+        // You have to change this to the active bots in your server 
+        const options = [
+            { label: 'Bulbasaur', description: 'The dual-type Grass/Poison Seed Pokémon.', value: 'Bulbasaur' },
+            { label: 'Charmander', description: 'The Fire-type Lizard Pokémon.', value: 'Charmander' },
+            { label: 'Squirtle', description: 'The Water-type Tiny Turtle Pokémon.', value: 'Squirtle' }
+        ];
+
+        options.forEach(option => {
+            select.addOptions(
                 new StringSelectMenuOptionBuilder()
-                    .setLabel('Bulbasaur')
-                    .setDescription('The dual-type Grass/Poison Seed Pokémon.')
-                    .setValue('bulbasaur'),
-                new StringSelectMenuOptionBuilder()
-                    .setLabel('Charmander')
-                    .setDescription('The Fire-type Lizard Pokémon.')
-                    .setValue('charmander'),
-                new StringSelectMenuOptionBuilder()
-                    .setLabel('Squirtle')
-                    .setDescription('The Water-type Tiny Turtle Pokémon.')
-                    .setValue('squirtle'),
+                    .setLabel(option.label)
+                    .setDescription(option.description)
+                    .setValue(option.value)
             );
+        });
+
 
         const row = new ActionRowBuilder()
             .addComponents(select);

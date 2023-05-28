@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { getBotReply } = require('../../../script/bot.js');
+const { loadBrain, getBotReply } = require('../../../script/bot.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -16,6 +16,7 @@ module.exports = {
         }
 
         const message = interaction.options.getString('message');
+        await loadBrain(`../assets/data/brain.rive`);
         const botReply = await getBotReply(message);
         await interaction.reply(`${selectedBot}: ${botReply}`);
     },
