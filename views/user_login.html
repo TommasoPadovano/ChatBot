@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>Administration Page for ChatBot</title>
+        <link rel="stylesheet" href="/styles/style_admin.css">
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+
+        <!-- CSS Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+        <!-- JS Bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
+    </head>
+    <style>
+      .creation-form {
+          background-color: rgba(255, 255, 255, 0.2);
+          padding: 30px;
+          border-radius: 20px;
+          max-width: 500px;
+          margin: 0 auto;
+          box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.2);
+      }
+    </style>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">ChatBot</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="user_login.html">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <body class="general_body">
+        <br>
+        <div class="creation-form">
+          <form method="POST" action="/">
+            <div class="form-group">
+              <label for="username">Username:</label>
+              <input type="text" class="form-control" id="username" name="username" placeholder="Insert your username..." required>
+              <label for="password">Password:</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Insert your password..." required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+    </body>
+</html>

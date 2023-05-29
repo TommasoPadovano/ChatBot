@@ -2,6 +2,7 @@
   <head>
     <title>Simple ChatAI using RiveScript.js</title>
     <link rel="stylesheet" href="/styles/style.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
   </head>
   <body>
     <div class="chat">
@@ -29,7 +30,7 @@
         };
         
         //launch the request
-        fetch('/getBotInfo', myInit)
+        fetch('/bot', myInit)
           .then((httpResponse)=>{
             return httpResponse.text();
           })

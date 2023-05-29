@@ -372,7 +372,11 @@ class BotService {
   }
 
   static activateBot(bot) {
+    const session = require('express-session');
+    const userManager = require('./UserService.js');
+
     console.log('Activating the bot with id: ' + bot.id);
+
     const appBot = express();
     // support json encoded bodies
     appBot.use(bodyParser.json());
@@ -383,39 +387,54 @@ class BotService {
     appBot.use(express.static('data'))
     appBot.use('/data', express.static('data'));
     appBot.use('/static', express.static('views'));
+    appBot.use(session({
+      secret: 'my-secret-key',
+      resave: false,
+      saveUninitialized: false
+    }));
 
     const port = INIT_PORT + bot.id;
 
     appBot.get('/', (req, res) => {
       console.log("Redirecting...")
-      res.redirect('/static/index.html');
+      if(req.session.username) {
+        res.redirect('/static/index.html');
+      } else {
+        res.redirect('/static/user_login.html');
+      }
     });
 
-    appBot.get('/getBotInfo', (req, res) => {
-      console.log("Hello!");
-      //provide the requested bot
-
-
+    appBot.get('/bot', (req, res) => {
+      // Provide the requested bot
       res.status(200).json(bot);
     });
 
-    /*
     appBot.post('/', (req, res) => {
-      const { login, message } = req.body;
-      bots[id].rive
-        .reply(login, message)
-        .then(function (reply) {
-          res.send({ name: bots[id].info.name, message: reply });
-        })
-        .catch((err) => console.log(err));
-    });*/
+      const username = req.body.username;
+      const password = req.body.password;
+
+      userManager.checkUserCredentials(username, password).then((isValid) => {
+        if(isValid) {
+          req.session.username = username;
+          res.redirect('/static/index.html');
+        } else {
+          res.send('Error, wrong credentials')
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    })
+    
+    appBot.post('/chat', (req, res) => {
+      
+    });
 
 
     const server = appBot.listen(port, () => {
       console.log(`Chatbot listening on port ${port}`)
     });
 
-    //aggiungi il server alla lista di bot attivi
+    //Add the server to the list of active bots
     activeBots.push(server);
   }
 

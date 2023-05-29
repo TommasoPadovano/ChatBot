@@ -26,7 +26,6 @@ app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
   // Check that the user is logged in
-  console.log(req.session.username);
   if(req.session.username) {
     console.log("hello");
     // First retrieve all the bots
