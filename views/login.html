@@ -1,11 +1,18 @@
 <html>
     <head>
-        <title>Admin Login Page</title>
+        <title>Administration Page for ChatBot</title>
         <link rel="stylesheet" href="/styles/style_admin.css">
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+
+        <!-- CSS Bootstrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+        <!-- JS Bootstrap -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css">
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     </head>
     <style>
       .creation-form {
@@ -41,7 +48,9 @@
           <form method="POST" action="/login">
             <div class="form-group">
               <label for="username">Username:</label>
-              <input type="text" class="form-control" id="username" name="username" placeholder="Insert your username...">
+              <input type="text" class="form-control" id="username" name="username" placeholder="Insert your username..." required>
+              <label for="password">Password:</label>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Insert your password..." required>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>

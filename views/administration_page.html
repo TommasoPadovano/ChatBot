@@ -149,6 +149,7 @@
     <script>
         document.addEventListener('DOMContentLoaded',init);
 
+        let isLoggedIn;
         let botList;
         let createNewBotButton;
         let updateBotButton;
@@ -419,8 +420,12 @@
               return httpResponse.json()
             })
             .then((data)=>{
+              isLoggedIn = data.isLoggedIn;
+              if(!isLoggedIn) {
+                console.log("Please login");
+                window.location.href = "/static/login.html";
+              }
               let setOfBots = data.bots;
-              let isAdmin = data.admin;
               rivescripts = data.rivescripts;
 
               const formContainer = document.querySelector('.creation-form');
@@ -457,21 +462,10 @@
                 div.append(noBot);
               }
 
-              if (isAdmin) {
-                formContainer.style.display = 'block';
-                logout_button.style.display = 'block';
-                login_button.style.display = 'none';
-              } else {
-                formContainer.style.display = 'none';
-                logout_button.style.display = 'none';
-                login_button.style.display = 'block';
+              formContainer.style.display = 'block';
+              logout_button.style.display = 'block';
+              login_button.style.display = 'none';
 
-                let edit_button = document.querySelector('.edit-button');
-                edit_button.style.display = 'none';
-
-                let modify_button = document.querySelector('.delete-button');
-                modify_button.style.display = 'none';
-              }
             })
             .catch((err)=>{
               console.log(`ERROR : ${err}`);

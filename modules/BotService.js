@@ -332,6 +332,7 @@ class BotService {
     });
   }
 
+  /*
   //we should rethink it once we handle the responses and implement the history too for now it's useless
   async processInput(input) {
     const promises = [];
@@ -348,7 +349,7 @@ class BotService {
       return Promise.all(promises);
     }
     return undefined;
-  }
+  }*/
 
   async addtohistory(input, response, time) {
     const historyObj = { input, response, time };
@@ -385,7 +386,6 @@ class BotService {
 
     const port = INIT_PORT + bot.id;
 
-    
     appBot.get('/', (req, res) => {
       console.log("Redirecting...")
       res.redirect('/static/index.html');
