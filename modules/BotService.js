@@ -174,9 +174,7 @@ class BotService {
         if (err) {
           console.error(err);
           reject(err);
-        } else {
-          console.log(rows);
-  
+        } else {  
           // Promises array for brains and mouths queries
           const promises = rows.map((bot) => {
             return new Promise((resolveBot, rejectBot) => {
