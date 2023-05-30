@@ -351,10 +351,21 @@ class BotService {
     return undefined;
   }*/
 
-  async addtohistory(input, response, time) {
-    const historyObj = { input, response, time };
-    this.history.push(historyObj);
-    await this.save();
+  static saveMessages(botId, username, userMessage, botReply) {
+    let timestamp = new Date().getTime();
+    return new Promise((resolve, reject) => {
+      //let addChatQuery = `INSERT INTO chats (bot_id, username, timestamp, user_msg, bot_answer) VALUES (${botId}, '${username}', ${timestamp}, '${userMessage}', '${botReply}')`;
+      let addChatQuery = `INSERT INTO chats (bot_id, username, timestamp, user_msg, bot_answer) VALUES (?, ?, ?, ?, ?)`;
+      db.run(addChatQuery, [botId, username, timestamp, userMessage, botReply], function (err) {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+        } else {
+          console.log(`Chat between bot with ID ${botId} and ${username} has been successfully added.`);
+          resolve();
+        }
+      });
+    });
   }
 
   static getRivescripts() {
@@ -426,7 +437,14 @@ class BotService {
     })
     
     appBot.post('/chat', (req, res) => {
-      
+      let message = req.body.message;
+      let reply = req.body.reply;
+      console.log(message);
+      console.log(reply);
+
+      this.saveMessages(bot.id, req.session.username, message, reply).then(() => {
+        res.send("Done");
+      });
     });
 
 
