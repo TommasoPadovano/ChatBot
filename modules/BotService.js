@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 //const RiveScript = require('rivescript');
 
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./modules/chatbots.db');
+const db = new sqlite3.Database('/home/okhaloui/Documents/S4/Services_Web/Project/ChatBot/modules/chatbots.db');
 
 const INIT_PORT = 4001;
 
@@ -29,7 +29,7 @@ class BotService {
         const sql2 = 'INSERT INTO brains (name, bot_id) VALUES (?,?)';
         bot.brains.forEach(async (brain) => {
           db.run(sql2, [brain, this.lastID], function (err) {
-            if(err) {
+            if (err) {
               console.error(err.message);
             } else {
               console.log(`A new entry has been added into brains`);
@@ -41,7 +41,7 @@ class BotService {
         const sql3 = 'INSERT INTO mouths (name, bot_id) VALUES (?,?)';
         bot.mouths.forEach(async (mouth) => {
           db.run(sql3, [mouth, this.lastID], function (err) {
-            if(err) {
+            if (err) {
               console.error(err.message);
             } else {
               console.log(`A new entry has been added into mouths`);
@@ -62,12 +62,12 @@ class BotService {
     return new Promise((resolve, reject) => {
       const bot_id = newBot.id;
       const { name, status, profile_url } = newBot;
-  
+
       // If the user has inserted at least one of these values, update it
       if (name || status || profile_url) {
         // Construction of the update query
         let updateQuery = 'UPDATE bots SET';
-  
+
         // Adding the fields to update
         if (name) {
           updateQuery += ` name = '${name}',`;
@@ -78,13 +78,13 @@ class BotService {
         if (profile_url) {
           updateQuery += ` profile_url = '${profile_url}',`;
         }
-  
+
         // Removing the last comma
         updateQuery = updateQuery.slice(0, -1);
-  
+
         // Identification of the specific bot to update
         updateQuery += ` WHERE id = ${bot_id};`;
-  
+
         // Execution of the query
         db.run(updateQuery, function (err) {
           if (err) {
@@ -125,22 +125,22 @@ class BotService {
           reject(err);
         } else {
           console.log(rows);
-  
+
           // Promises array for brains and mouths queries
           const promises = rows.map((bot) => {
             return new Promise((resolveBot, rejectBot) => {
               const sql = 'SELECT name FROM brains WHERE bot_id = ?';
               db.all(sql, [bot.id], function (err, brains) {
-                if(err) {
+                if (err) {
                   console.error(err.message);
                   rejectBot(err);
                 } else {
                   let brains_array = brains.map((brain) => brain.name);
                   bot.brains = brains_array;
-  
+
                   const sql2 = 'SELECT name FROM mouths WHERE bot_id = ?';
                   db.all(sql2, [bot.id], function (err, mouths) {
-                    if(err) {
+                    if (err) {
                       console.error(err.message);
                       rejectBot(err);
                     } else {
@@ -154,7 +154,7 @@ class BotService {
               });
             });
           });
-  
+
           Promise.all(promises)
             .then(() => {
               resolve(results);
@@ -167,6 +167,24 @@ class BotService {
     });
   }
 
+  static findBotIdByName(botName) {
+    return new Promise((resolve, reject) => {
+      const query = 'SELECT id FROM bots WHERE name = ?';
+      db.get(query, [botName], (err, row) => {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+        } else {
+          if (row) {
+            resolve(row.id);
+          } else {
+            resolve(null);
+          }
+        }
+      });
+    });
+  }
+
   static getBotsActiveOnDiscord() {
     return new Promise((resolve, reject) => {
       let results = [];
@@ -174,27 +192,27 @@ class BotService {
         if (err) {
           console.error(err);
           reject(err);
-        } else {  
+        } else {
           // Promises array for brains and mouths queries
           const promises = rows.map((bot) => {
             return new Promise((resolveBot, rejectBot) => {
               const sql = 'SELECT name FROM brains WHERE bot_id = ?';
               db.all(sql, [bot.id], function (err, brains) {
-                if(err) {
+                if (err) {
                   console.error(err.message);
                   rejectBot(err);
                 } else {
                   let brains_array = brains.map((brain) => brain.name);
                   bot.brains = brains_array;
-  
+
                   const sql2 = 'SELECT name FROM mouths WHERE bot_id = ?';
                   db.all(sql2, [bot.id], function (err, mouths) {
-                    if(err) {
+                    if (err) {
                       console.error(err.message);
                       rejectBot(err);
                     } else {
                       let mouths_array = mouths.map((mouth) => mouth.name);
-                      if(mouths_array.includes('discord')) {
+                      if (mouths_array.includes('discord')) {
                         bot.mouths = mouths_array;
                         results.push(bot);
                       }
@@ -205,7 +223,7 @@ class BotService {
               });
             });
           });
-  
+
           Promise.all(promises)
             .then(() => {
               resolve(results);
@@ -236,7 +254,7 @@ class BotService {
     return new Promise((resolve, reject) => {
       const bot_id = newBot.id;
       const { brains_toAdd } = newBot;
-  
+
       if (brains_toAdd) {
         const deletePromises = brains_toAdd.map((brain) => {
           return new Promise((resolve, reject) => {
@@ -252,7 +270,7 @@ class BotService {
             });
           });
         });
-  
+
         Promise.all(deletePromises)
           .then(() => {
             resolve();
@@ -270,7 +288,7 @@ class BotService {
     return new Promise((resolve, reject) => {
       const bot_id = newBot.id;
       const { brains_toDelete } = newBot;
-  
+
       if (brains_toDelete) {
         const deletePromises = brains_toDelete.map((brain) => {
           return new Promise((resolve, reject) => {
@@ -286,7 +304,7 @@ class BotService {
             });
           });
         });
-  
+
         Promise.all(deletePromises)
           .then(() => {
             resolve();
@@ -319,7 +337,7 @@ class BotService {
     return new Promise((resolve, reject) => {
       const bot_id = newBot.id;
       const { mouths_toAdd } = newBot;
-  
+
       if (mouths_toAdd) {
         const addPromises = mouths_toAdd.map((mouth) => {
           return new Promise((resolve, reject) => {
@@ -335,7 +353,7 @@ class BotService {
             });
           });
         });
-  
+
         Promise.all(addPromises)
           .then(() => {
             resolve();
@@ -353,7 +371,7 @@ class BotService {
     return new Promise((resolve, reject) => {
       const bot_id = newBot.id;
       const { mouths_toRemove } = newBot;
-  
+
       if (mouths_toRemove) {
         const deletePromises = mouths_toRemove.map((mouth) => {
           return new Promise((resolve, reject) => {
@@ -369,7 +387,7 @@ class BotService {
             });
           });
         });
-  
+
         Promise.all(deletePromises)
           .then(() => {
             resolve();
@@ -473,7 +491,7 @@ class BotService {
 
     appBot.get('/', (req, res) => {
       console.log("Redirecting...")
-      if(req.session.username) {
+      if (req.session.username) {
         res.redirect('/static/index.html');
       } else {
         res.redirect('/static/user_login.html');
@@ -498,7 +516,7 @@ class BotService {
       const password = req.body.password;
 
       userManager.checkUserCredentials(username, password).then((isValid) => {
-        if(isValid) {
+        if (isValid) {
           req.session.username = username;
           res.redirect('/static/index.html');
         } else {
@@ -508,7 +526,7 @@ class BotService {
         console.error(error);
       });
     })
-    
+
     appBot.post('/chat', (req, res) => {
       let message = req.body.message;
       let reply = req.body.reply;
@@ -530,9 +548,9 @@ class BotService {
   static closeActiveBots() {
     //close all active bots
     activeBots.forEach(bot => {
-        bot.close();
+      bot.close();
     });
-}
+  }
 }
 
 module.exports = BotService;

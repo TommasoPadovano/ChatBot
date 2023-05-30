@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { loadBrain, getBotReply } = require('../../../script/bot.js');
+const BotService = require('../../../modules/BotService');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -20,7 +21,15 @@ module.exports = {
         }
 
         const message = interaction.options.getString('message');
-        await loadBrain(`../assets/data/brain.rive`);
+        let selectedBotId = await BotService.findBotIdByName(selectedBot[0]);
+        let botbrains = await BotService.getBotBrains(selectedBotId);//here we should have the selected bot id
+        let brainPaths = botbrains.map(botbrain => `../assets/data/${botbrain.name}`);
+
+        // Now you can load each brain in a loop
+        for (let path of brainPaths) {
+          await loadBrain(path);
+        }
+        
         const botReply = await getBotReply(message);
         await interaction.reply(`${selectedBot}: ${botReply}`);
     },

@@ -31,8 +31,8 @@ client.on(Events.InteractionCreate, async interaction => {
     if (!interaction.isStringSelectMenu()) return;
     if (interaction.customId === 'select_bot') {
         selectedBot = interaction.values; // Store the selected bot in the variable
-
-        await interaction.reply({ content: `You are now chatting with ${interaction.values}` });
+		
+		await interaction.reply({ content: `You are now chatting with ${interaction.values}`, ephemeral: true });
     }
 	if (interaction.customId === 'select_users') {
         selectedUser = interaction.values; // Store the selected bot in the variable

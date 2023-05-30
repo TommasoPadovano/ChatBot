@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('./modules/chatbots.db');
+const db = new sqlite3.Database('/home/okhaloui/Documents/S4/Services_Web/Project/ChatBot/modules/chatbots.db');
 
 class UserService {
 
