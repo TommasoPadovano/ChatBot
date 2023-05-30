@@ -2,9 +2,24 @@
   <head>
     <title>Simple ChatAI using RiveScript.js</title>
     <link rel="stylesheet" href="/styles/style.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
   </head>
+  <style>
+    
+    #load_old {
+      border-radius: 20px;
+      background-color: transparent;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      color: black;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+  </style>
   <body>
     <div class="chat">
+      <button id="load_old">Load previous messages</button>
       <div class="messages"></div>
       <div id="edge"></div>
       <form class="actions">
@@ -14,78 +29,146 @@
  
     <script src="https://unpkg.com/rivescript@latest/dist/rivescript.min.js"></script>
     <script>
-        let bot = new RiveScript();
-        const brains = [];
+        document.addEventListener('DOMContentLoaded',init);
 
+        let bot;
         let message_container;
         let info_box;
         let form;
+        let brains;
+        let loadMoreButton;
+        let messageCounter;
 
-        let myHeaders = new Headers();
-        myHeaders.append('Content-Type', 'application/json');
-        let myInit = { 
-          method: 'GET',
-          headers: myHeaders,
-        };
-        
-        //launch the request
-        fetch('/getBotInfo', myInit)
-          .then((httpResponse)=>{
-            return httpResponse.text();
+        function init() {
+          bot = new RiveScript();
+          brains = [];
+          messageCounter = 2;
+          message_container = document.querySelector('.messages');
+          loadMoreButton = document.getElementById('load_old');
+          loadMoreButton.addEventListener('click', () => {
+            message_container.innerHTML = '';
+            messageCounter += 2;
+            getPreviousChat(messageCounter);
           })
-          .then((responseBody)=>{
-            botInfo = JSON.parse(responseBody);
-            console.log(botInfo.brains);
-  
-            //add all the brains of our bot
-            //NOTE: we have to test if the bot actually works with more than one brain
-            botInfo.brains.forEach((brain) => {
-              console.log('Adding: ' + '/data/' + brain)
-              brains.push('/data/' + brain);
-            })
-            //load the brains and then call botReady
-            bot.loadFile(brains).then(botReady).catch(botNotReady); // load the brains
 
-            message_container = document.querySelector('.messages');
-            form = document.querySelector('form');
-            input_box = document.querySelector('input');
-            form.addEventListener("submit", (e) => {
-              e.preventDefault();
-              selfReply(input_box.value);
-              input_box.value = "";
-            });
-            console.log(`response is ${responseBody}`);
+          getPreviousChat(2);
+          setUpBot();
+        }
+
+        function getPreviousChat(numOfMessages) {
+          let myHeaders = new Headers();
+          myHeaders.append('Content-Type', 'application/json');
+          let myInit = { 
+            method: 'GET',
+            headers: myHeaders,
+          };
+          fetch(`/${numOfMessages}`, myInit)
+          .then((httpResponse)=>{
+            return httpResponse.json();
+          })
+          .then((data)=>{
+            // Manage the retrieve messages
+            for (let i = data.length - 1; i >= 0; i--) {
+              const tuple = data[i];
+              oldSelfReply(tuple.user_msg);
+              botReply(tuple.bot_answer);
+            }
           })
           .catch((err)=>{
             console.log(`ERROR : ${err}`);
           })
-        /*
-        brains.push('/data/brain.rive');
-        bot.loadFile(brains).then(botReady).catch(botNotReady); // load the brains
+        }
 
-        const message_container = document.querySelector('.messages');
-        const form = document.querySelector('form');
-        const input_box = document.querySelector('input');
-        form.addEventListener("submit", (e) => {
-          e.preventDefault();
-          selfReply(input_box.value);
-          input_box.value = "";
-        });*/
+        function setUpBot() {
+          let myHeaders = new Headers();
+          myHeaders.append('Content-Type', 'application/json');
+          let myInit = { 
+            method: 'GET',
+            headers: myHeaders,
+          };
+          
+          // Launch the request
+          fetch('/bot', myInit)
+            .then((httpResponse)=>{
+              return httpResponse.text();
+            })
+            .then((responseBody)=>{
+              botInfo = JSON.parse(responseBody);
+              console.log(botInfo.brains);
+    
+              // Add all the brains of our bot
+              // NOTE: we have to test if the bot actually works with more than one brain
+              botInfo.brains.forEach((brain) => {
+                console.log('Adding: ' + '/data/' + brain)
+                brains.push('/data/' + brain);
+              })
+              // Load the brains and then call botReady
+              bot.loadFile(brains).then(botReady).catch(botNotReady); // load the brains
+
+              //message_container = document.querySelector('.messages');
+              form = document.querySelector('form');
+              input_box = document.querySelector('input');
+              form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                selfReply(input_box.value);
+                input_box.value = "";
+              });
+              console.log(`response is ${responseBody}`);
+            })
+            .catch((err)=>{
+              console.log(`ERROR : ${err}`);
+            })
+        }
+
         function botReply(message){
+          // Display the bot answer in the chat
           message_container.innerHTML += `<div class="bot">${message}</div>`;
           location.href = "#edge";
         }
+
+        function oldSelfReply(message) {
+          // Display the old user message in the chat
+          message_container.innerHTML += `<div class="self">${message}</div>`;
+          location.href = "#edge";
+        }
+
         function selfReply(message){
+          // Display the user message in the chat
           message_container.innerHTML += `<div class="self">${message}</div>`;
           location.href = "#edge";
           
+          // Bot reply
           bot.reply("local-user", message).then(function(reply) {
             botReply(reply);
+
+            // Save the user message and the bot's reply in the db
+            let headers = new Headers();
+            headers.append('Content-Type', 'application/json');
+
+            let payload = {
+              message: message,
+              reply: reply
+            }
+            let myBody = JSON.stringify(payload);
+
+            let init = { 
+              method: 'POST',
+              headers: headers,
+              body: myBody,
+            };
+
+            fetch('/chat', init)
+              .then((httpResponse) => {
+                return httpResponse.text()
+              })
+              .catch((err)=>{
+                console.log(`ERROR : ${err}`);
+              })
           });
         }
         function botReady(){
           bot.sortReplies();
-          botReply("Hello");
+          //botReply("Hello");
         }
         function botNotReady(err){
         }

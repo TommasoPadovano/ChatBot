@@ -2,6 +2,7 @@
     <head>
         <title>Administration Page for ChatBot</title>
         <link rel="stylesheet" href="/styles/style_admin.css">
+        <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
 
         <!-- CSS Bootstrap -->
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
@@ -35,58 +36,96 @@
       </div>
     </nav>
     <body class="general_body">
-      <div class="search-container">
+      <!--<div class="search-container">
         <form class="search-form" action="#">
           <input type="text" placeholder="Search...">
           <button type="submit">Search</button>
         </form>
-      </div>
+      </div>-->
         <div class="container">
-            <form class="creation-form">
-                <h1>Bot Creation</h1>
-                <label for="bot-image">Bot image:</label>
+            <div class="forms">
+              <form class="creation-form">
+                  <h1>Bot Creation</h1>
+                  <label for="bot-image">Bot image:</label>
+                  <div class="image-carousel">
+                      <input type="radio" name="bot-image" id="image1" value="image1.png">
+                      <label for="image1"><img src="/images/image1.png" alt="Image 1"></label>
+                      
+                      <input type="radio" name="bot-image" id="image2" value="image2.png">
+                      <label for="image2"><img src="/images/image2.png" alt="Image 2"></label>
+                      
+                      <input type="radio" name="bot-image" id="image3" value="image3.png">
+                      <label for="image3"><img src="/images/image3.png" alt="Image 3"></label>
+                      
+                      <input type="radio" name="bot-image" id="image4" value="image4.png">
+                      <label for="image4"><img src="/images/image4.png" alt="Image 4"></label>
+                      
+                      <input type="radio" name="bot-image" id="image5" value="image5.png">
+                      <label for="image5"><img src="/images/image5.png" alt="Image 5"></label>
+                  </div>
+                  <label for="bot-name">Bot name: </label>
+                  <input type="text" id="bot-name" name="bot-name" placeholder="Insert the name...">
+                  <label for="bot-file">Brains: </label>
+                  <select id="bot-file" name="bot-file">
+                    <option value="-">-</option>
+                  </select>
+                  <label>Selected brains:</label>
+                  <ol id="selected-brains"></ol>
+                  <br>
+                  <label for="bot-status">Status: </label><br>
+                  <label><input type="radio" name="status_choice" value="active"> Active </label>
+                  <label><input type="radio" name="status_choice" value="inactive"> Inactive </label>
+                  <br><br>
+                  <label for="bot-mouths">Active also on: </label><br>
+                  <input type="checkbox" id="checkbox1" name="checkbox" value="discord">
+                  <label for="checkbox1"><img class="mouth" src="/images/discord.png" alt="Discord" /></label>
+                  <br>
+                  <button class="create-button" type="submit">Create Bot</button>
+              </form>
+              <form class="update-form">
+                <h1>Bot Update</h1>
+                <label for="update-bot-image">Bot image:</label>
                 <div class="image-carousel">
-                    <input type="radio" name="bot-image" id="image1" value="image1.png">
-                    <label for="image1"><img src="/images/image1.png" alt="Image 1"></label>
-                    
-                    <input type="radio" name="bot-image" id="image2" value="image2.png">
-                    <label for="image2"><img src="/images/image2.png" alt="Image 2"></label>
-                    
-                    <input type="radio" name="bot-image" id="image3" value="image3.png">
-                    <label for="image3"><img src="/images/image3.png" alt="Image 3"></label>
-                    
-                    <input type="radio" name="bot-image" id="image4" value="image4.png">
-                    <label for="image4"><img src="/images/image4.png" alt="Image 4"></label>
-                    
-                    <input type="radio" name="bot-image" id="image5" value="image5.png">
-                    <label for="image5"><img src="/images/image5.png" alt="Image 5"></label>
+                  <input type="radio" name="update-bot-image" id="up_image1" value="image1.png">
+                  <label for="up_image1"><img src="/images/image1.png" alt="Image 1"></label>
+                      
+                  <input type="radio" name="update-bot-image" id="up_image2" value="image2.png">
+                  <label for="up_image2"><img src="/images/image2.png" alt="Image 2"></label>
+                      
+                  <input type="radio" name="update-bot-image" id="up_image3" value="image3.png">
+                  <label for="up_image3"><img src="/images/image3.png" alt="Image 3"></label>
+                      
+                  <input type="radio" name="update-bot-image" id="up_image4" value="image4.png">
+                  <label for="up_image4"><img src="/images/image4.png" alt="Image 4"></label>
+                      
+                  <input type="radio" name="update-bot-image" id="up_image5" value="image5.png">
+                  <label for="up_image5"><img src="/images/image5.png" alt="Image 5"></label>
                 </div>
-                <label for="bot-name">Bot name: </label>
-                <input type="text" id="bot-name" name="bot-name" placeholder="Insert the name...">
-                <label for="bot-file">Brains: </label>
-                <select id="bot-file" name="bot-file">
-                    <option value="Standard.rive">Standard.rive</option>
-                    <option value="Comments.rive">Comments.rive</option>
-                    <option value="Replies.rive">Replies.rive</option>
+                <label for="updated-bot-name">Bot name: </label>
+                <input type="text" id="updated-bot-name" name="up-bot-name" placeholder="Insert the new name...">
+                <label>Remove brains already present: </label>
+                <div id="existingBrainsContainer"></div>
+                <label for="updated-bot-file">Add brains: </label>
+                <select id="updated-bot-file" name="up-bot-file">
+                  <option value="-">-</option>
                 </select>
+                <br>
                 <label>Selected brains:</label>
-                <ol id="selected-brains"></ol>
+                <ol id="updated-selected-brains"></ol>
                 <br>
-                <label for="bot-status">Status: </label><br>
-                <label><input type="radio" name="status_choice" value="active"> Active </label>
-                <label><input type="radio" name="status_choice" value="inactive"> Inactive </label>
+                <label for="updated-bot-status">Status: </label><br>
+                <label><input type="radio" name="up_status_choice" value="active"> Active </label>
+                <label><input type="radio" name="up_status_choice" value="inactive"> Inactive </label>
                 <br><br>
-                <label for="bot-mouths">Active also on: </label><br>
-                <input type="checkbox" id="checkbox1" name="checkbox" value="discord">
-                <label for="checkbox1"><img class="mouth" src="/images/discord.png" alt="Discord" /></label>
-                <input type="checkbox" id="checkbox2" name="checkbox" value="slack">
-                <label for="checkbox2"><img class="mouth" src="/images/slack.png" alt="Slack" /></label>
-                <input type="checkbox" id="checkbox3" name="checkbox" value="mastodon">
-                <label for="checkbox3"><img class="mouth" src="/images/mastodon.png" alt="Mastodon" /></label>
+                <label for="updated-bot-mouths">Already active also on (select to disable it): </label><br>
+                <div id="mouth_choices"></div>
                 <br>
-                <button class="create-button" type="submit">Create Bot</button>
-            </form>
-            
+                <label for="updated-bot-mouths">Active also on: </label><br>
+                <div id="mouth_choices_notActive"></div>
+                <br>
+                <button class="update-button" type="submit">Update Bot</button>
+              </form>
+            </div>
             <br>
 
             <h2>Existing bots:</h2> <br>
@@ -110,62 +149,104 @@
     <script>
         document.addEventListener('DOMContentLoaded',init);
 
+        let isLoggedIn;
         let botList;
         let createNewBotButton;
+        let updateBotButton;
+        let updateFormContainer;
         let chosen_image1;
         let chosen_image2;
         let chosen_image3;
         let chosen_image4;
         let chosen_image5;
+
         let botName;
+        let imagesRadioButtonsCreation;
+        let mouthsCheckboxButtonsCreation;
+        let statusOptions;
+
+        let updatedNameField;
+        let imagesRadioButtonsUpdated;
+        let brainsToDelCheckboxes;
+        let mouthCheckboxButtonsAdd;
+        let mouthCheckboxButtonsRemove;
+        let updatedStatusOptions;
+        let existingBrainsContainer;
+        let remainingBrains;
+        let mouthsActive;
+        let mouthsNotActive;
+
+        let update_list;
+
         let selected;
+        let update_selected;
+        let rivescript;
 
 
         function manageFilesInCreation() {
           const select = document.getElementById("bot-file");
           const list = document.getElementById("selected-brains");
+          const update_select = document.getElementById("updated-bot-file");
+          //const update_list = document.getElementById("updated-selected-brains");
 
           select.addEventListener("change", function() {
               const selectedOption = this.options[this.selectedIndex];
-              if (!selected.includes(selectedOption.value)) {
+              if (selectedOption.value != '-' && !selected.includes(selectedOption.value)) {
                   selected.push(selectedOption.value);
                   const listItem = document.createElement("li");
                   listItem.textContent = selectedOption.textContent;
                   list.appendChild(listItem);
+              } else if(selectedOption.value === "-") {
+                selected = [];
+                list.innerHTML = "";
+              }
+          });
+
+          update_select.addEventListener("change", function() {
+              const up_selectedOption = this.options[this.selectedIndex];
+              if (up_selectedOption.value != '-' && !update_selected.includes(up_selectedOption.value)) {
+                  update_selected.push(up_selectedOption.value);
+                  const up_listItem = document.createElement("li");
+                  up_listItem.textContent = up_selectedOption.textContent;
+                  update_list.appendChild(up_listItem);
+              } else if(up_selectedOption.value === "-") {
+                update_selected = [];
+                update_list.innerHTML = "";
               }
           });
         }
 
         function createNewBot() {
-          const radioButtons = document.getElementsByName('bot-image');
+          // Check which image has been selected (if None set to image1.png as default)
           let selectedImage = 'image1.png'; //default value
-
-          for (let i = 0; i < radioButtons.length; i++) {
-            if (radioButtons[i].checked) {
-              selectedImage = radioButtons[i].value;
+          for (let i = 0; i < imagesRadioButtonsCreation.length; i++) {
+            if (imagesRadioButtonsCreation[i].checked) {
+              selectedImage = imagesRadioButtonsCreation[i].value;
               break;
             }
           }
 
-          const checkboxButtons = document.getElementsByName('checkbox');
+          // Check which mouth has been selected
           let mouths = [];
-          for(let j = 0; j < checkboxButtons.length; j++) {
-            if(checkboxButtons[j].checked) {
-              mouths.push(checkboxButtons[j].value);
+          for(let j = 0; j < mouthsCheckboxButtonsCreation.length; j++) {
+            if(mouthsCheckboxButtonsCreation[j].checked) {
+              mouths.push(mouthsCheckboxButtonsCreation[j].value);
             }
           }
 
+          // Check the bot status (if None has been selected, set it to active as default)
           let status = 'active';
-          const options = document.getElementsByName('status_choice');
-          for (let i = 0; i < options.length; i++) {
-            if (options[i].checked) {
-              status = options[i].value;
+          for (let i = 0; i < statusOptions.length; i++) {
+            if (statusOptions[i].checked) {
+              status = statusOptions[i].value;
               break;
             }
           }
 
           let myHeaders = new Headers();
           myHeaders.append('Content-Type', 'application/json');
+
+          // Create the body
           let payload = {
             profile_url: selectedImage,
             name: botName.value,
@@ -175,23 +256,22 @@
             history: [],
           };
           let myBody = JSON.stringify(payload);
+
           let myInit = { 
             method: 'POST',
             headers: myHeaders,
             body: myBody,
           };
-          let myURL = "http://localhost:3000/";
 
-          //launch the request
-          fetch(myURL,myInit)
+          // Launch the request
+          fetch('/',myInit)
           .then((httpResponse)=>{
             return httpResponse.text();
           })
           .then((responseBody)=>{
-            reloadBotList();
-            //clear fields
-
             console.log(`response is ${responseBody}`);
+            //reloadBotList();
+            window.location.reload();
           })
           .catch((err)=>{
             console.log(`ERROR : ${err}`);
@@ -229,7 +309,7 @@
 
           let modify_button = document.createElement('button');
           modify_button.className = "edit-button";
-          modify_button.addEventListener('click', () => {updateBot()});
+          modify_button.addEventListener('click', () => {updateBot(bot.id)});
           
           let modify_icon = document.createElement('i');
           modify_icon.className = "fas fa-pencil-alt";
@@ -262,7 +342,7 @@
           info_box.append(bot_name);
           
           let status = document.createElement('p');
-          status.textContent = "Status: active";
+          status.textContent = "Status: " + bot.status;
 
           info_box.append(status);
 
@@ -335,27 +415,32 @@
                     cache: 'default' 
                 };
 
-          let myURL = `http://localhost:3000/`;
-
-          fetch(myURL,myInit)
+          fetch('/',myInit)
             .then((httpResponse)=>{
               return httpResponse.json()
             })
             .then((data)=>{
+              isLoggedIn = data.isLoggedIn;
+              if(!isLoggedIn) {
+                console.log("Please login");
+                window.location.href = "/static/login.html";
+              }
               let setOfBots = data.bots;
-              let isAdmin = data.admin;
+              rivescripts = data.rivescripts;
+
               const formContainer = document.querySelector('.creation-form');
               const logout_button = document.getElementById('logout-link');
               const login_button = document.getElementById('login-link');
-              if (isAdmin) {
-                formContainer.style.display = 'block';
-                logout_button.style.display = 'block';
-                login_button.style.display = 'none';
-              } else {
-                formContainer.style.display = 'none';
-                logout_button.style.display = 'none';
-                login_button.style.display = 'block';
-              }
+              const rivescripts_creation = document.getElementById('bot-file');
+
+              // Fill the creation box with rivescripts
+              rivescripts.forEach((rivescript) => {
+                let option = document.createElement('option');
+                option.value = rivescript;
+                option.textContent = rivescript;
+                rivescripts_creation.append(option);
+              })
+
               if(setOfBots.length != 0) {
                 let first = true;
                 i = 1;
@@ -376,6 +461,11 @@
 
                 div.append(noBot);
               }
+
+              formContainer.style.display = 'block';
+              logout_button.style.display = 'block';
+              login_button.style.display = 'none';
+
             })
             .catch((err)=>{
               console.log(`ERROR : ${err}`);
@@ -385,38 +475,296 @@
         function deleteBot(botId) {
           let myHeaders = new Headers();
           myHeaders.append('Content-Type', 'application/json');
-
+          
           let myInit = { 
             method: 'DELETE',
             headers: myHeaders,
           };
 
-          let myURL = `http://localhost:3000/${botId}`;
-          fetch(myURL,myInit)
+          fetch(`/${botId}`,myInit)
             .then((httpResponse)=>{
               return httpResponse.text()
             })
             .then((returnString)=>{
-              reloadBotList();
               console.log(`All is OK ${returnString}`)
+              window.location.reload();
             })
             .catch((err)=>{
               console.log(`ERROR : ${err}`);
             })
         }
 
-        function updateBot() {
-          console.log("I will update this bot");
+        function updateBot(bot_id) {
+          // Clear previous fields
+          // Field name
+          updatedNameField.value = '';
+
+          // Profile images radio buttons
+          for (let i = 0; i < imagesRadioButtonsUpdated.length; i++) {
+            if (imagesRadioButtonsUpdated[i].checked) {
+              imagesRadioButtonsUpdated[i].checked = false;
+              break;
+            }
+          }
+
+          // Status buttons
+          for (let i = 0; i < updatedStatusOptions.length; i++) {
+            if (updatedStatusOptions[i].checked) {
+              updatedStatusOptions[i].checked = false;
+              break;
+            }
+          }
+
+          // Container of the already added brains
+          existingBrainsContainer.innerHTML = '';
+
+          // Selector of the possibile brains to add
+          remainingBrains.innerHTML = '';
+          let noneOption = document.createElement('option');
+          noneOption.value = '-';
+          noneOption.textContent = '-';
+          remainingBrains.append(noneOption);
+
+          // Container of the selected brains to be added
+          update_selected = [];
+          update_list.innerHTML = '';
+
+          // Mouths active container
+          mouthsActive.innerHTML = '';
+
+          // Mouths not active container
+          mouthsNotActive.innerHTML = '';
+
+          // Fill the container for brains and mouths with the dynamic content from db
+          setExistingBrainsAndMouths(bot_id);
+
+          // Display the update form
+          updateFormContainer.style.display = 'block';
+          
+          // Attach the id of the bot to the form in order to keep track of this information when you send the form
+          updateFormContainer.id = bot_id;
+        }
+
+        function sendUpdate() {
+          event.preventDefault();
+
+          // Retrieve the bot id from the update form
+          const bot_id = updateFormContainer.id;
+
+          // Retrieve the eventual new bot name
+          const botName = updatedNameField.value;
+
+          // Retrieve the eventual new profile picture for the bot
+          let selectedImage = '';
+          for (let i = 0; i < imagesRadioButtonsUpdated.length; i++) {
+            if (imagesRadioButtonsUpdated[i].checked) {
+              selectedImage = imagesRadioButtonsUpdated[i].value;
+              break;
+            }
+          }
+
+          // Retrieve the eventual brains to delete
+          let brainsToDelete = [];
+          for(let j = 0; j < brainsToDelCheckboxes.length; j++) {
+            if(brainsToDelCheckboxes[j].checked) {
+              brainsToDelete.push(brainsToDelCheckboxes[j].value);
+            }
+          }
+          
+          // Retrieve the eventual mouths to add
+          let mouthsAdd = [];
+          for(let j = 0; j < mouthCheckboxButtonsAdd.length; j++) {
+            if(mouthCheckboxButtonsAdd[j].checked) {
+              mouthsAdd.push(mouthCheckboxButtonsAdd[j].value);
+            }
+          }
+
+          // Retrieve the eventual mouths to remove
+          let mouthsRemove = [];
+          for(let j = 0; j < mouthCheckboxButtonsRemove.length; j++) {
+            if(mouthCheckboxButtonsRemove[j].checked) {
+              mouthsRemove.push(mouthCheckboxButtonsRemove[j].value);
+            }
+          }
+
+          // Retrieve the eventual new bot status
+          let status = '';
+          for (let i = 0; i < updatedStatusOptions.length; i++) {
+            if (updatedStatusOptions[i].checked) {
+              status = updatedStatusOptions[i].value;
+              break;
+            }
+          }
+
+          let myHeaders = new Headers();
+          myHeaders.append('Content-Type', 'application/json');
+
+          // Create the body of the update request
+          let payload = {
+            id: bot_id,
+            profile_url: selectedImage,
+            name: botName,
+            status: status,
+            brains_toAdd: update_selected,
+            brains_toDelete: brainsToDelete,
+            mouths_toAdd: mouthsAdd,
+            mouths_toRemove: mouthsRemove
+          };
+          let myBody = JSON.stringify(payload);
+
+          let myInit = { 
+            method: 'PATCH',
+            headers: myHeaders,
+            body: myBody,
+          };
+          
+          // Launch the request
+          fetch('/',myInit)
+          .then((httpResponse)=>{
+            return httpResponse.text();
+          })
+          .then((responseBody)=>{
+            console.log(`response is ${responseBody}`);
+            window.location.reload();
+          })
+          .catch((err)=>{
+            console.log(`ERROR : ${err}`);
+          })
+        }
+
+        // Retrieve from the database the brains and mouths already set for the bot to update
+        // and set the html containers to display them
+        function setExistingBrainsAndMouths(bot_id) {
+          // Get brains and mouths for the current bot to update
+          fetch(`/${bot_id}`, { method: 'GET' })
+          .then((httpResponse)=>{
+              return httpResponse.json()
+            })
+            .then((data) => {
+              const brains = data.brains;
+              const mouths = data.mouths;
+
+              // Create a checkbox for every inserted brain so that the user can eventually remove it
+              // const existingBrainsContainer = document.getElementById('existingBrainsContainer');
+              brains.forEach(brain => {
+                const brainCheckbox = document.createElement('input');
+                brainCheckbox.type = 'checkbox';
+                brainCheckbox.className = 'brainsToDelete';
+                brainCheckbox.name = 'existingBrains[]';
+                brainCheckbox.value = brain.name;
+
+                const brainLabel = document.createElement('label');
+                brainLabel.appendChild(brainCheckbox);
+                brainLabel.appendChild(document.createTextNode(brain.name));
+
+                existingBrainsContainer.appendChild(brainLabel);
+                existingBrainsContainer.appendChild(document.createElement('br'));
+              });
+
+              // Display the brains that are not yet given to the bot to update
+              // const remainingBrains = document.getElementById('updated-bot-file');
+              rivescripts.forEach((rivescript) => {
+                let brains_array = [];
+                brains.forEach((brain) =>{
+                  brains_array.push(brain.name);
+                })
+                if(!brains_array.includes(rivescript)) {
+                  let option = document.createElement('option');
+                  option.value = rivescript;
+                  option.textContent = rivescript;
+                  remainingBrains.append(option);
+                }
+              })
+
+              // Create a checkbox for every inserted mouth so that the user can eventually remove it
+              mouths.forEach((mouth) => {
+                const mouthCheckbox = document.createElement('input');
+                mouthCheckbox.type = 'checkbox';
+                mouthCheckbox.id = 'updated-checkbox1';
+                mouthCheckbox.name = 'up-checkbox-to-remove';
+                mouthCheckbox.value = mouth.name;
+
+                const mouthLabel = document.createElement('label');
+                
+                const img = document.createElement('img');
+                img.className = "mouth";
+                img.src = "/images/" + mouth.name + '.png';
+                img.alt = mouth.name;
+
+                mouthLabel.appendChild(img);
+
+                mouthsActive.appendChild(mouthCheckbox);
+                mouthsActive.appendChild(mouthLabel);
+                mouthsActive.appendChild(document.createElement('br'));
+              })
+
+              let mouths_array = [];
+              mouths.forEach(mouth => {
+                mouths_array.push(mouth.name);
+              })
+              if(!mouths_array.includes("discord")) {
+                //let mouthsNotActive = document.getElementById('mouth_choices_notActive');
+                const mouthCheckbox2 = document.createElement('input');
+                mouthCheckbox2.type = 'checkbox';
+                mouthCheckbox2.id = 'updated-checkbox1';
+                mouthCheckbox2.name = 'up-checkbox-to-add';
+                mouthCheckbox2.value = "discord";
+
+                const mouthLabel2 = document.createElement('label');
+                
+                const img2 = document.createElement('img');
+                img2.className = "mouth";
+                img2.src = "/images/discord.png";
+                img2.alt = "discord";
+
+                mouthLabel2.appendChild(img2);
+
+                mouthsNotActive.appendChild(mouthCheckbox2);
+                mouthsNotActive.appendChild(mouthLabel2);
+                mouthsNotActive.appendChild(document.createElement('br'));
+              }
+            })
         }
 
         function init() {
+          // Initialize brains containers
+          selected = [];
+          update_selected = [];
+
           botList = document.querySelector('.carousel-inner');
+
+          // Initialize images
           chosen_image1 = document.getElementById('image1');
           chosen_image2 = document.getElementById('image2');
           chosen_image3 = document.getElementById('image3');
           chosen_image4 = document.getElementById('image4');
           chosen_image5 = document.getElementById('image5');
+
+          // Hide the updateForm
+          updateFormContainer = document.querySelector('.update-form');
+          updateFormContainer.style.display = 'none';
+
+          // Get all the createForm fields
           botName = document.getElementById('bot-name');
+          imagesRadioButtonsCreation = document.getElementsByName('bot-image');
+          mouthsCheckboxButtonsCreation = document.getElementsByName('checkbox');
+          statusOptions = document.getElementsByName('status_choice');
+
+          // Get all the updateForm fields
+          updatedNameField = document.getElementById('updated-bot-name');
+          imagesRadioButtonsUpdated = document.getElementsByName('update-bot-image');
+          brainsToDelCheckboxes = document.getElementsByClassName('brainsToDelete');
+          mouthCheckboxButtonsAdd = document.getElementsByName('up-checkbox-to-add');
+          mouthCheckboxButtonsRemove = document.getElementsByName('up-checkbox-to-remove');
+          updatedStatusOptions = document.getElementsByName('up_status_choice');
+          existingBrainsContainer = document.getElementById('existingBrainsContainer');
+          remainingBrains = document.getElementById('updated-bot-file');
+          mouthsActive = document.getElementById('mouth_choices');
+          mouthsNotActive = document.getElementById('mouth_choices_notActive');
+
+          update_list = document.getElementById("updated-selected-brains");
+
+          // Logout initialization
           const logoutLink = document.getElementById('logout-link');
           logoutLink.addEventListener('click', async (event) => {
             event.preventDefault(); 
@@ -430,10 +778,12 @@
                 console.error(`Server responded with status ${err}`);
               });
           });
-          selected = [];
 
           createNewBotButton = document.querySelector('.create-button');
           createNewBotButton.addEventListener('click', createNewBot);
+
+          updateBotButton = document.querySelector('.update-button');
+          updateBotButton.addEventListener('click', sendUpdate);
 
           manageFilesInCreation();
           reloadBotList();
