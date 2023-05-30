@@ -368,6 +368,20 @@ class BotService {
     });
   }
 
+  static retrieveMessages(botId, username, numOfMessages) {
+    return new Promise((resolve, reject) => {
+      let retrieveMessagesQuery = `SELECT user_msg, bot_answer FROM chats WHERE bot_id = ? AND username = ? ORDER BY timestamp ASC LIMIT ?`;
+      db.all(retrieveMessagesQuery, [botId, username, numOfMessages], function (err, rows) {
+        if (err) {
+          console.error(err.message);
+          reject(err);
+        } else {
+          resolve(rows);
+        }
+      });
+    });
+  }
+
   static getRivescripts() {
     return new Promise((resolve, reject) => {
       let getRivescripts = `SELECT name FROM rivescripts`;
@@ -420,6 +434,14 @@ class BotService {
       res.status(200).json(bot);
     });
 
+    appBot.get('/:id', (req, res) => {
+      let numOfMessages = req.params.id;
+
+      this.retrieveMessages(bot.id, req.session.username, numOfMessages).then((result) => {
+        res.status(200).json(result);
+      });
+    })
+
     appBot.post('/', (req, res) => {
       const username = req.body.username;
       const password = req.body.password;
@@ -439,8 +461,6 @@ class BotService {
     appBot.post('/chat', (req, res) => {
       let message = req.body.message;
       let reply = req.body.reply;
-      console.log(message);
-      console.log(reply);
 
       this.saveMessages(bot.id, req.session.username, message, reply).then(() => {
         res.send("Done");
