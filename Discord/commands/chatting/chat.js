@@ -11,11 +11,11 @@ module.exports = {
                 .setRequired(true)),
     async execute(interaction) {
         if (typeof selectedUser === 'undefined') {
-            await interaction.reply('Please select the user first using /users.');
+            await interaction.reply({ content:'Please select the user first using /users.',  ephemeral: true });
             return;
         }
         if (typeof selectedBot === 'undefined') {
-            await interaction.reply('Please select a bot first using /available_bots.');
+            await interaction.reply({ content:'Please select a bot first using /available_bots.', ephemeral: true });
             return;
         }
 

@@ -31,6 +31,7 @@ module.exports = {
         await interaction.reply({
             content: 'Choose the user',
             components: [row],
+            ephemeral: true
         });
     },
 };
