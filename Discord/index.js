@@ -37,7 +37,7 @@ client.on(Events.InteractionCreate, async interaction => {
 	if (interaction.customId === 'select_users') {
         selectedUser = interaction.values; // Store the selected bot in the variable
 
-        await interaction.reply({ content: `Welcome back ${interaction.values}` });
+        await interaction.reply({ content: `Welcome back ${interaction.values}`, ephemeral: true });
     }
 })
 

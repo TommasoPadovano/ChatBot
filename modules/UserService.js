@@ -11,16 +11,13 @@ class UserService {
 
   static getUsers() {
     return new Promise((resolve, reject) => {
-      db.get('SELECT username FROM users', [username, password], (err, row) => {
+      db.all('SELECT username FROM users', (err, row) => {
         if (err) {
           console.error(err);
           reject(err);
-        } else if (row) {
-          // The user exists and the password is correct
-          resolve(true);
         } else {
-          // The username and/or the password are incorrect or you are not an admin
-          resolve(false);
+          // The user exists and the password is correct
+          resolve(row);
         }
       });
     });
