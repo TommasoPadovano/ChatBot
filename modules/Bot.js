@@ -1,5 +1,3 @@
-const prisma = require("../prisma/prisma.js");
-
 class Bot {
   static id = this.id;
   static name = this.name;
