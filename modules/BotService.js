@@ -370,7 +370,7 @@ class BotService {
 
   static retrieveMessages(botId, username, numOfMessages) {
     return new Promise((resolve, reject) => {
-      let retrieveMessagesQuery = `SELECT user_msg, bot_answer FROM chats WHERE bot_id = ? AND username = ? ORDER BY timestamp ASC LIMIT ?`;
+      let retrieveMessagesQuery = `SELECT user_msg, bot_answer FROM chats WHERE bot_id = ? AND username = ? ORDER BY timestamp DESC LIMIT ?`;
       db.all(retrieveMessagesQuery, [botId, username, numOfMessages], function (err, rows) {
         if (err) {
           console.error(err.message);
