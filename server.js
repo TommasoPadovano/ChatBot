@@ -24,65 +24,96 @@ app.use(session({
 
 app.set('view engine', 'ejs');
 
+// This endpoint is called immediately to redirect to the administration page
+// If the user is NOT logged in, it will redirect it to the login page instead
 app.get('/', (req, res) => {
-  // Check that the user is logged in
   if(req.session.username) {
-    // First retrieve all the bots
-    botManager.getBots()
-    .then((results) => {
-
-      // Close the bots already active;
-      botManager.closeActiveBots();
-
-      // Active bots
-      results.forEach((bot) => {
-        if(bot.status === 'active') {
-          botManager.activateBot(bot);
-        }
-      });
-
-      // Retrieve rivescripts available
-      botManager.getRivescripts().then((rive_res) => {
-        let rivescripts = [];
-        rive_res.forEach((rivescript) => {
-          rivescripts.push(rivescript.name);
-        })
-
-        res.status(200).json({bots: results, rivescripts: rivescripts, isLoggedIn: true});
-      });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    res.redirect('/static/administration_page.html');
   } else {
-    console.log("Please log in")
-    res.status(200).json({isLoggedIn: false});
+    res.redirect('/static/login.html');
   }
 })
 
-app.get('/:id', (req, res) =>{
+/*
+app.get('/static/administration_page', (req, res) => {
+  if(req.sessionStore.username) {
+    res.redirect('/static/administration_page.html');
+  } else {
+    res.redirect('/static/login.html');
+  }
+})*/
+
+// This endpoint is called in the administration page to get all the bots
+// Before returning the bots, the endpoint also activates the ones whose status is "active"
+app.get('/bots/', (req, res) => {
+    // First retrieve all the bots
+    botManager.getBots()
+      .then((results) => {
+
+        // Close the bots already active;
+        botManager.closeActiveBots();
+
+        // Activate bots
+        results.forEach((bot) => {
+          if(bot.status === 'active') {
+            botManager.activateBot(bot);
+          }
+        });
+
+        // Return the requested bots
+        res.status(200).json(results);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+})
+
+// This endpoint returns the rivescripts names
+app.get('/rivescripts/', (req, res) => {
+  // Retrieve rivescripts available
+  botManager.getRivescripts().then((rive_res) => {
+    let rivescripts = [];
+    rive_res.forEach((rivescript) => {
+      rivescripts.push(rivescript.name);
+    })
+
+    res.status(200).json(rivescripts);
+  });
+})
+
+// This endpoint is called to get the mouths of a specific bot in order to use them in the update form
+app.get('/bots/:id/mouths', (req, res) =>{
   let bot_id = req.params.id;
   botManager.getBotMouths(bot_id).then((mouths) => {
-    botManager.getBotBrains(bot_id).then((brains) => {
-      res.status(200).json({brains: brains, mouths: mouths});
-    })
+    res.status(200).json(mouths);
   })
 })
 
-// Create a new bot
-app.post('/',(req,res) => {
-  let botToAdd = req.body;
-  console.log(botToAdd);
-  botManager.addBot(botToAdd);
-  res.status(201).send('All is OK');
+// This endpoint is called to get the brains of a specific bot in order to use them in the update form
+app.get('/bots/:id/brains', (req, res) =>{
+  let bot_id = req.params.id;
+  botManager.getBotBrains(bot_id).then((brains) => {
+    res.status(200).json(brains);
+  })
 })
 
+// This endpoint creates a new bot
+app.post('/bots/',(req,res) => {
+  let botToAdd = req.body;
+
+  botManager.addBot(botToAdd);
+  let botAdded = 'Bot added successfully';
+  res.status(201).json(botAdded);
+})
+
+// This endpoint is used for the logout
 app.post('/logout', (req, res) => {
   console.log("Logging out...")
   req.session.username = null;
   res.redirect('/static/login.html');
 })
 
+// This endpoint is used for the login
 app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -99,24 +130,24 @@ app.post('/login', (req, res) => {
   });
 })
 
-app.delete('/:id', (req, res) => {
+// This endpoint deletes the bot whose id is specified in the request parameter
+app.delete('/bots/:id', (req, res) => {
   let id = req.params.id;
-
   botManager.removeBot(id);
-
   res.status(201).send('All is OK');
 })
 
-app.patch('/', (req, res) => {
+// This endpoint is used to update the bot identified by the id in the request parameter
+app.patch('/bots/:id', (req, res) => {
+  let botId = req.params.id;
   let botInfo = req.body;
-  console.log(botInfo);
 
-  botManager.updateBot(botInfo).then(() => {
-    botManager.removeBrains(botInfo).then(() => {
-      botManager.addBrains(botInfo).then(() => {
-        botManager.removeMouths(botInfo).then(() => {
-          botManager.addMouths(botInfo).then(() => {
-            res.status(201).send('All is OK');
+  botManager.updateBot(botId, botInfo).then(() => {
+    botManager.removeBrains(botId, botInfo).then(() => {
+      botManager.addBrains(botId, botInfo).then(() => {
+        botManager.removeMouths(botId, botInfo).then(() => {
+          botManager.addMouths(botId, botInfo).then(() => {
+            res.status(201).json('All is OK');
           })
         })
       })
