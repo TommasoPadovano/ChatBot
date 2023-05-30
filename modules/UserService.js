@@ -9,6 +9,23 @@ class UserService {
   constructor(data) {
   }
 
+  static getUsers() {
+    return new Promise((resolve, reject) => {
+      db.get('SELECT username FROM users', [username, password], (err, row) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else if (row) {
+          // The user exists and the password is correct
+          resolve(true);
+        } else {
+          // The username and/or the password are incorrect or you are not an admin
+          resolve(false);
+        }
+      });
+    });
+  }
+
   static checkCredentials(username, password) {
     return new Promise((resolve, reject) => {
       db.get('SELECT * FROM users WHERE username = ? AND password = ? AND role = 1', [username, password], (err, row) => {

@@ -167,6 +167,59 @@ class BotService {
     });
   }
 
+  static getBotsActiveOnDiscord() {
+    return new Promise((resolve, reject) => {
+      let results = [];
+      db.all('SELECT * FROM bots', (err, rows) => {
+        if (err) {
+          console.error(err);
+          reject(err);
+        } else {
+          console.log(rows);
+  
+          // Promises array for brains and mouths queries
+          const promises = rows.map((bot) => {
+            return new Promise((resolveBot, rejectBot) => {
+              const sql = 'SELECT name FROM brains WHERE bot_id = ?';
+              db.all(sql, [bot.id], function (err, brains) {
+                if(err) {
+                  console.error(err.message);
+                  rejectBot(err);
+                } else {
+                  let brains_array = brains.map((brain) => brain.name);
+                  bot.brains = brains_array;
+  
+                  const sql2 = 'SELECT name FROM mouths WHERE bot_id = ?';
+                  db.all(sql2, [bot.id], function (err, mouths) {
+                    if(err) {
+                      console.error(err.message);
+                      rejectBot(err);
+                    } else {
+                      let mouths_array = mouths.map((mouth) => mouth.name);
+                      if(mouths_array.includes('discord')) {
+                        bot.mouths = mouths_array;
+                        results.push(bot);
+                      }
+                      resolveBot();
+                    }
+                  });
+                }
+              });
+            });
+          });
+  
+          Promise.all(promises)
+            .then(() => {
+              resolve(results);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        }
+      });
+    });
+  }
+
   static getBotBrains(bot_id) {
     return new Promise((resolve, reject) => {
       let query = `SELECT name FROM brains WHERE bot_id = ?`;

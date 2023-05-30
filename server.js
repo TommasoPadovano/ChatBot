@@ -27,7 +27,6 @@ app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
   // Check that the user is logged in
   if(req.session.username) {
-    console.log("hello");
     // First retrieve all the bots
     botManager.getBots()
     .then((results) => {
@@ -70,7 +69,7 @@ app.get('/:id', (req, res) =>{
   })
 })
 
-//create a new bot
+// Create a new bot
 app.post('/',(req,res) => {
   let botToAdd = req.body;
   console.log(botToAdd);
