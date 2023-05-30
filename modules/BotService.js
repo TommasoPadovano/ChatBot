@@ -58,9 +58,8 @@ class BotService {
   }
 
   //from PATCH
-  static updateBot(newBot) {
+  static updateBot(botId, newBot) {
     return new Promise((resolve, reject) => {
-      const bot_id = newBot.id;
       const { name, status, profile_url } = newBot;
   
       // If the user has inserted at least one of these values, update it
@@ -83,7 +82,7 @@ class BotService {
         updateQuery = updateQuery.slice(0, -1);
   
         // Identification of the specific bot to update
-        updateQuery += ` WHERE id = ${bot_id};`;
+        updateQuery += ` WHERE id = ${botId};`;
   
         // Execution of the query
         db.run(updateQuery, function (err) {
@@ -91,7 +90,7 @@ class BotService {
             console.error('Error during the update of the bot:', err.message);
             reject(err);
           } else {
-            console.log(`Bot with ID ${bot_id} updated successfully.`);
+            console.log(`Bot with ID ${botId} updated successfully.`);
             resolve();
           }
         });
@@ -232,21 +231,20 @@ class BotService {
     });
   }
 
-  static addBrains(newBot) {
+  static addBrains(botId, newBot) {
     return new Promise((resolve, reject) => {
-      const bot_id = newBot.id;
       const { brains_toAdd } = newBot;
   
       if (brains_toAdd) {
         const deletePromises = brains_toAdd.map((brain) => {
           return new Promise((resolve, reject) => {
-            let brainsAddQuery = `INSERT INTO brains (name, bot_id) VALUES ('${brain}', ${bot_id})`;
+            let brainsAddQuery = `INSERT INTO brains (name, bot_id) VALUES ('${brain}', ${botId})`;
             db.run(brainsAddQuery, function (err) {
               if (err) {
                 console.error(err.message);
                 reject(err);
               } else {
-                console.log(`Brains for bot with ID ${bot_id} have been successfully added.`);
+                console.log(`Brains for bot with ID ${botId} have been successfully added.`);
                 resolve();
               }
             });
@@ -266,21 +264,20 @@ class BotService {
     });
   }
 
-  static removeBrains(newBot) {
+  static removeBrains(botId, newBot) {
     return new Promise((resolve, reject) => {
-      const bot_id = newBot.id;
       const { brains_toDelete } = newBot;
   
       if (brains_toDelete) {
         const deletePromises = brains_toDelete.map((brain) => {
           return new Promise((resolve, reject) => {
-            let brainsDeleteQuery = `DELETE FROM brains WHERE bot_id = ${bot_id} AND name = '${brain}'`;
+            let brainsDeleteQuery = `DELETE FROM brains WHERE bot_id = ${botId} AND name = '${brain}'`;
             db.run(brainsDeleteQuery, function (err) {
               if (err) {
                 console.error(err.message);
                 reject(err);
               } else {
-                console.log(`Brains for bot with ID ${bot_id} have been successfully deleted.`);
+                console.log(`Brains for bot with ID ${botId} have been successfully deleted.`);
                 resolve();
               }
             });
@@ -315,21 +312,20 @@ class BotService {
     });
   }
 
-  static addMouths(newBot) {
+  static addMouths(botId, newBot) {
     return new Promise((resolve, reject) => {
-      const bot_id = newBot.id;
       const { mouths_toAdd } = newBot;
   
       if (mouths_toAdd) {
         const addPromises = mouths_toAdd.map((mouth) => {
           return new Promise((resolve, reject) => {
-            let mouthsAddQuery = `INSERT INTO mouths (name, bot_id) VALUES ('${mouth}', ${bot_id})`;
+            let mouthsAddQuery = `INSERT INTO mouths (name, bot_id) VALUES ('${mouth}', ${botId})`;
             db.run(mouthsAddQuery, function (err) {
               if (err) {
                 console.error(err.message);
                 reject(err);
               } else {
-                console.log(`Mouths for bot with ID ${bot_id} have been successfully added.`);
+                console.log(`Mouths for bot with ID ${botId} have been successfully added.`);
                 resolve();
               }
             });
@@ -349,21 +345,20 @@ class BotService {
     });
   }
 
-  static removeMouths(newBot) {
+  static removeMouths(botId, newBot) {
     return new Promise((resolve, reject) => {
-      const bot_id = newBot.id;
       const { mouths_toRemove } = newBot;
   
       if (mouths_toRemove) {
         const deletePromises = mouths_toRemove.map((mouth) => {
           return new Promise((resolve, reject) => {
-            let mouthsDeleteQuery = `DELETE FROM mouths WHERE bot_id = ${bot_id} AND name = '${mouth}'`;
+            let mouthsDeleteQuery = `DELETE FROM mouths WHERE bot_id = ${botId} AND name = '${mouth}'`;
             db.run(mouthsDeleteQuery, function (err) {
               if (err) {
                 console.error(err.message);
                 reject(err);
               } else {
-                console.log(`Mouths for bot with ID ${bot_id} have been successfully deleted.`);
+                console.log(`Mouths for bot with ID ${botId} have been successfully deleted.`);
                 resolve();
               }
             });
@@ -383,29 +378,9 @@ class BotService {
     });
   }
 
-  /*
-  //we should rethink it once we handle the responses and implement the history too for now it's useless
-  async processInput(input) {
-    const promises = [];
-    for (const brain of this.brains) {
-      promises.push(brain.processInput(input));
-    }
-    const results = await Promise.all(promises);
-    const response = results.find((r) => r !== undefined);
-    if (response !== undefined) {
-      const promises = [];
-      for (const mouth of this.mouths) {
-        promises.push(mouth.output(response));
-      }
-      return Promise.all(promises);
-    }
-    return undefined;
-  }*/
-
   static saveMessages(botId, username, userMessage, botReply) {
     let timestamp = new Date().getTime();
     return new Promise((resolve, reject) => {
-      //let addChatQuery = `INSERT INTO chats (bot_id, username, timestamp, user_msg, bot_answer) VALUES (${botId}, '${username}', ${timestamp}, '${userMessage}', '${botReply}')`;
       let addChatQuery = `INSERT INTO chats (bot_id, username, timestamp, user_msg, bot_answer) VALUES (?, ?, ?, ?, ?)`;
       db.run(addChatQuery, [botId, username, timestamp, userMessage, botReply], function (err) {
         if (err) {
@@ -471,6 +446,8 @@ class BotService {
 
     const port = INIT_PORT + bot.id;
 
+    // This endpoint is called immediately to redirect to the chat page
+    // If the user is NOT logged in, it will redirect it to the user login page instead
     appBot.get('/', (req, res) => {
       console.log("Redirecting...")
       if(req.session.username) {
@@ -480,13 +457,15 @@ class BotService {
       }
     });
 
+    //
     appBot.get('/bot', (req, res) => {
       // Provide the requested bot
       res.status(200).json(bot);
     });
 
-    appBot.get('/:id', (req, res) => {
-      let numOfMessages = req.params.id;
+    // This endpoints retrieves the chat between user currently logged in and the bot of this server
+    appBot.post('/chat/', (req, res) => {
+      let numOfMessages = req.body.numOfMessages;
 
       this.retrieveMessages(bot.id, req.session.username, numOfMessages).then((result) => {
         res.status(200).json(result);

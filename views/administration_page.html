@@ -187,7 +187,6 @@
           const select = document.getElementById("bot-file");
           const list = document.getElementById("selected-brains");
           const update_select = document.getElementById("updated-bot-file");
-          //const update_list = document.getElementById("updated-selected-brains");
 
           select.addEventListener("change", function() {
               const selectedOption = this.options[this.selectedIndex];
@@ -264,12 +263,12 @@
           };
 
           // Launch the request
-          fetch('/',myInit)
+          fetch('/bots/',myInit)
           .then((httpResponse)=>{
-            return httpResponse.text();
+            return httpResponse.json();
           })
           .then((responseBody)=>{
-            console.log(`response is ${responseBody}`);
+            console.log(responseBody);
             //reloadBotList();
             window.location.reload();
           })
@@ -415,57 +414,66 @@
                     cache: 'default' 
                 };
 
-          fetch('/',myInit)
+          fetch('/bots/',myInit)
             .then((httpResponse)=>{
               return httpResponse.json()
             })
             .then((data)=>{
+              /*
               isLoggedIn = data.isLoggedIn;
               if(!isLoggedIn) {
-                console.log("Please login");
                 window.location.href = "/static/login.html";
-              }
-              let setOfBots = data.bots;
-              rivescripts = data.rivescripts;
+              }*/
+              let setOfBots = data;
 
-              const formContainer = document.querySelector('.creation-form');
-              const logout_button = document.getElementById('logout-link');
-              const login_button = document.getElementById('login-link');
-              const rivescripts_creation = document.getElementById('bot-file');
+              fetch('/rivescripts/', myInit)
+                .then((httpResponse) => {
+                  return httpResponse.json()
+                })
+                .then((rivescrpt) => {
+                  rivescripts = rivescrpt;
 
-              // Fill the creation box with rivescripts
-              rivescripts.forEach((rivescript) => {
-                let option = document.createElement('option');
-                option.value = rivescript;
-                option.textContent = rivescript;
-                rivescripts_creation.append(option);
-              })
+                  const formContainer = document.querySelector('.creation-form');
+                  const logout_button = document.getElementById('logout-link');
+                  const login_button = document.getElementById('login-link');
+                  const rivescripts_creation = document.getElementById('bot-file');
 
-              if(setOfBots.length != 0) {
-                let first = true;
-                i = 1;
-                for(let bot of setOfBots){
-                  if(first == true) {
-                    addBot(bot,"active", "0");
-                    first = false;
+                  // Fill the creation box with rivescripts
+                  rivescripts.forEach((rivescript) => {
+                    let option = document.createElement('option');
+                    option.value = rivescript;
+                    option.textContent = rivescript;
+                    rivescripts_creation.append(option);
+                  })
+
+                  if(setOfBots.length != 0) {
+                    let first = true;
+                    i = 1;
+                    for(let bot of setOfBots){
+                      if(first == true) {
+                        addBot(bot,"active", "0");
+                        first = false;
+                      } else {
+                        addBot(bot, "", i);
+                        i++;
+                      }
+                    }
                   } else {
-                    addBot(bot, "", i);
-                    i++;
+                    let div = document.getElementById('carouselIndicators')
+                    div.innerHTML = "";
+                    let noBot = document.createElement('p');
+                    noBot.textContent = "No bot has been created yet."
+
+                    div.append(noBot);
                   }
-                }
-              } else {
-                let div = document.getElementById('carouselIndicators')
-                div.innerHTML = "";
-                let noBot = document.createElement('p');
-                noBot.textContent = "No bot has been created yet."
 
-                div.append(noBot);
-              }
-
-              formContainer.style.display = 'block';
-              logout_button.style.display = 'block';
-              login_button.style.display = 'none';
-
+                  formContainer.style.display = 'block';
+                  logout_button.style.display = 'block';
+                  login_button.style.display = 'none';
+                })
+                .catch((err)=>{
+                  console.log(`ERROR : ${err}`);
+                })
             })
             .catch((err)=>{
               console.log(`ERROR : ${err}`);
@@ -481,7 +489,7 @@
             headers: myHeaders,
           };
 
-          fetch(`/${botId}`,myInit)
+          fetch(`/bots/${botId}`,myInit)
             .then((httpResponse)=>{
               return httpResponse.text()
             })
@@ -601,7 +609,6 @@
 
           // Create the body of the update request
           let payload = {
-            id: bot_id,
             profile_url: selectedImage,
             name: botName,
             status: status,
@@ -619,9 +626,9 @@
           };
           
           // Launch the request
-          fetch('/',myInit)
+          fetch(`/bots/${bot_id}`,myInit)
           .then((httpResponse)=>{
-            return httpResponse.text();
+            return httpResponse.json();
           })
           .then((responseBody)=>{
             console.log(`response is ${responseBody}`);
@@ -635,47 +642,13 @@
         // Retrieve from the database the brains and mouths already set for the bot to update
         // and set the html containers to display them
         function setExistingBrainsAndMouths(bot_id) {
-          // Get brains and mouths for the current bot to update
-          fetch(`/${bot_id}`, { method: 'GET' })
+          // Get mouths for the current bot to update
+          fetch(`/bots/${bot_id}/mouths`, { method: 'GET' })
           .then((httpResponse)=>{
               return httpResponse.json()
             })
             .then((data) => {
-              const brains = data.brains;
-              const mouths = data.mouths;
-
-              // Create a checkbox for every inserted brain so that the user can eventually remove it
-              // const existingBrainsContainer = document.getElementById('existingBrainsContainer');
-              brains.forEach(brain => {
-                const brainCheckbox = document.createElement('input');
-                brainCheckbox.type = 'checkbox';
-                brainCheckbox.className = 'brainsToDelete';
-                brainCheckbox.name = 'existingBrains[]';
-                brainCheckbox.value = brain.name;
-
-                const brainLabel = document.createElement('label');
-                brainLabel.appendChild(brainCheckbox);
-                brainLabel.appendChild(document.createTextNode(brain.name));
-
-                existingBrainsContainer.appendChild(brainLabel);
-                existingBrainsContainer.appendChild(document.createElement('br'));
-              });
-
-              // Display the brains that are not yet given to the bot to update
-              // const remainingBrains = document.getElementById('updated-bot-file');
-              rivescripts.forEach((rivescript) => {
-                let brains_array = [];
-                brains.forEach((brain) =>{
-                  brains_array.push(brain.name);
-                })
-                if(!brains_array.includes(rivescript)) {
-                  let option = document.createElement('option');
-                  option.value = rivescript;
-                  option.textContent = rivescript;
-                  remainingBrains.append(option);
-                }
-              })
-
+              const mouths = data;
               // Create a checkbox for every inserted mouth so that the user can eventually remove it
               mouths.forEach((mouth) => {
                 const mouthCheckbox = document.createElement('input');
@@ -703,7 +676,6 @@
                 mouths_array.push(mouth.name);
               })
               if(!mouths_array.includes("discord")) {
-                //let mouthsNotActive = document.getElementById('mouth_choices_notActive');
                 const mouthCheckbox2 = document.createElement('input');
                 mouthCheckbox2.type = 'checkbox';
                 mouthCheckbox2.id = 'updated-checkbox1';
@@ -724,6 +696,45 @@
                 mouthsNotActive.appendChild(document.createElement('br'));
               }
             })
+            // Get brains for the current bot to update
+            fetch(`/bots/${bot_id}/brains`, { method: 'GET' })
+            .then((httpResponse)=>{
+                return httpResponse.json()
+              })
+              .then((data) => {
+                const brains = data;
+                
+                // Create a checkbox for every inserted brain so that the user can eventually remove it
+                // const existingBrainsContainer = document.getElementById('existingBrainsContainer');
+                brains.forEach(brain => {
+                  const brainCheckbox = document.createElement('input');
+                  brainCheckbox.type = 'checkbox';
+                  brainCheckbox.className = 'brainsToDelete';
+                  brainCheckbox.name = 'existingBrains[]';
+                  brainCheckbox.value = brain.name;
+
+                  const brainLabel = document.createElement('label');
+                  brainLabel.appendChild(brainCheckbox);
+                  brainLabel.appendChild(document.createTextNode(brain.name));
+
+                  existingBrainsContainer.appendChild(brainLabel);
+                  existingBrainsContainer.appendChild(document.createElement('br'));
+                });
+
+                // Display the brains that are not yet given to the bot to update
+                rivescripts.forEach((rivescript) => {
+                  let brains_array = [];
+                  brains.forEach((brain) =>{
+                    brains_array.push(brain.name);
+                  })
+                  if(!brains_array.includes(rivescript)) {
+                    let option = document.createElement('option');
+                    option.value = rivescript;
+                    option.textContent = rivescript;
+                    remainingBrains.append(option);
+                  }
+                })
+              })
         }
 
         function init() {
