@@ -58,25 +58,33 @@
         function getPreviousChat(numOfMessages) {
           let myHeaders = new Headers();
           myHeaders.append('Content-Type', 'application/json');
+
+          let payload = {
+            numOfMessages: numOfMessages,
+          }
+          let myBody = JSON.stringify(payload);
+
           let myInit = { 
-            method: 'GET',
+            method: 'POST',
             headers: myHeaders,
+            body: myBody
           };
-          fetch(`/${numOfMessages}`, myInit)
-          .then((httpResponse)=>{
-            return httpResponse.json();
-          })
-          .then((data)=>{
-            // Manage the retrieve messages
-            for (let i = data.length - 1; i >= 0; i--) {
-              const tuple = data[i];
-              oldSelfReply(tuple.user_msg);
-              botReply(tuple.bot_answer);
-            }
-          })
-          .catch((err)=>{
-            console.log(`ERROR : ${err}`);
-          })
+
+          fetch('/chat/', myInit)
+            .then((httpResponse)=>{
+              return httpResponse.json();
+            })
+            .then((data)=>{
+              // Manage the retrieve messages
+              for (let i = data.length - 1; i >= 0; i--) {
+                const tuple = data[i];
+                oldSelfReply(tuple.user_msg);
+                botReply(tuple.bot_answer);
+              }
+            })
+            .catch((err)=>{
+              console.log(`ERROR : ${err}`);
+            })
         }
 
         function setUpBot() {
@@ -157,9 +165,12 @@
               body: myBody,
             };
 
-            fetch('/chat', init)
+            fetch('/chats/', init)
               .then((httpResponse) => {
-                return httpResponse.text()
+                return httpResponse.json()
+              })
+              .then((data) => {
+                console.log(data);
               })
               .catch((err)=>{
                 console.log(`ERROR : ${err}`);

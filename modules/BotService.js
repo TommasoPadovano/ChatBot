@@ -6,7 +6,8 @@ const bodyParser = require('body-parser');
 //const RiveScript = require('rivescript');
 
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('/home/okhaloui/Documents/S4/Services_Web/Project/ChatBot/modules/chatbots.db');
+//const db = new sqlite3.Database('/home/okhaloui/Documents/S4/Services_Web/Project/ChatBot/modules/chatbots.db');
+const db = new sqlite3.Database('./modules/chatbots.db');
 
 const INIT_PORT = 4001;
 
@@ -475,7 +476,7 @@ class BotService {
       }
     });
 
-    //
+    // This endpoint retrieves the information about the bot of this server
     appBot.get('/bot', (req, res) => {
       // Provide the requested bot
       res.status(200).json(bot);
@@ -490,6 +491,9 @@ class BotService {
       });
     })
 
+    // This endpoint takes the username and password from the request body
+    // and checks that there exists a user with these credentials
+    // if so, it will redirect to the chat page, otherwise it will tell that the credentials are incorrect
     appBot.post('/', (req, res) => {
       const username = req.body.username;
       const password = req.body.password;
@@ -499,19 +503,20 @@ class BotService {
           req.session.username = username;
           res.redirect('/static/index.html');
         } else {
-          res.send('Error, wrong credentials')
+          res.json('Error, wrong credentials')
         }
       }).catch((error) => {
         console.error(error);
       });
     })
 
-    appBot.post('/chat', (req, res) => {
+    // This endpoint will insert the pair (userMessage - botReply) into the database
+    appBot.post('/chats/', (req, res) => {
       let message = req.body.message;
       let reply = req.body.reply;
 
       this.saveMessages(bot.id, req.session.username, message, reply).then(() => {
-        res.send("Done");
+        res.json("Done");
       });
     });
 
