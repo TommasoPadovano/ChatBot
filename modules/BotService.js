@@ -482,8 +482,8 @@ class BotService {
     });
 
     // This endpoints retrieves the chat between user currently logged in and the bot of this server
-    appBot.post('/chat/', (req, res) => {
-      let numOfMessages = req.body.numOfMessages;
+    appBot.get('/bots/chat/:numOfMessages', (req, res) => {
+      let numOfMessages = req.params.numOfMessages;
 
       this.retrieveMessages(bot.id, req.session.username, numOfMessages).then((result) => {
         res.status(200).json(result);
@@ -510,7 +510,7 @@ class BotService {
     })
 
     // This endpoint will insert the pair (userMessage - botReply) into the database
-    appBot.post('/chats/', (req, res) => {
+    appBot.post('/bots/chat/', (req, res) => {
       let message = req.body.message;
       let reply = req.body.reply;
 

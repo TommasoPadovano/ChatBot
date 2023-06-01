@@ -59,18 +59,18 @@
           let myHeaders = new Headers();
           myHeaders.append('Content-Type', 'application/json');
 
+          /*
           let payload = {
             numOfMessages: numOfMessages,
           }
-          let myBody = JSON.stringify(payload);
+          let myBody = JSON.stringify(payload);*/
 
           let myInit = { 
-            method: 'POST',
+            method: 'GET',
             headers: myHeaders,
-            body: myBody
           };
 
-          fetch('/chat/', myInit)
+          fetch(`/bots/chat/${numOfMessages}`, myInit)
             .then((httpResponse)=>{
               return httpResponse.json();
             })
@@ -165,7 +165,7 @@
               body: myBody,
             };
 
-            fetch('/chats/', init)
+            fetch('/bots/chat/', init)
               .then((httpResponse) => {
                 return httpResponse.json()
               })
