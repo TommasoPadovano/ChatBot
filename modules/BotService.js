@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 //const RiveScript = require('rivescript');
 
 const sqlite3 = require('sqlite3').verbose();
-//const db = new sqlite3.Database('/home/okhaloui/Documents/S4/Services_Web/Project/ChatBot/modules/chatbots.db');
 const db = new sqlite3.Database('./modules/chatbots.db');
 
 const INIT_PORT = 4001;
