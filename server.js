@@ -16,6 +16,7 @@ app.use('/static', express.static('views'));
 app.use(bodyParser.json()) 
 app.use(bodyParser.urlencoded({ extended: true }))
 
+// Used to save the username into the session
 app.use(session({
   secret: 'my-secret-key',
   resave: false,
@@ -33,15 +34,6 @@ app.get('/', (req, res) => {
     res.redirect('/static/login.html');
   }
 })
-
-/*
-app.get('/static/administration_page', (req, res) => {
-  if(req.sessionStore.username) {
-    res.redirect('/static/administration_page.html');
-  } else {
-    res.redirect('/static/login.html');
-  }
-})*/
 
 // This endpoint is called in the administration page to get all the bots
 // Before returning the bots, the endpoint also activates the ones whose status is "active"
@@ -102,8 +94,7 @@ app.post('/bots/',(req,res) => {
   let botToAdd = req.body;
 
   botManager.addBot(botToAdd);
-  let botAdded = 'Bot added successfully';
-  res.status(201).json(botAdded);
+  res.status(201).json('Bot added successfully');
 })
 
 // This endpoint is used for the logout
